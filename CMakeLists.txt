@@ -3,7 +3,11 @@ project(Temperature_distribution)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-set(SOURCE_FILES main.cpp CSRmatrix.cpp CSRmatrix.h special_number.cpp special_number.h)
+set(SOURCE_FILES main.cpp CSRmatrix.cpp CSRmatrix.h special_number.cpp special_number.h GUI.cpp GUI.h
+        animation.cpp
+        animation.h
+        menu.cpp
+        menu.h)
 add_executable(Temperature_distribution ${SOURCE_FILES})
 include_directories(/usr/local/include)
 
