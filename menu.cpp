@@ -6,7 +6,8 @@
 
 Menu::Menu()
 {
-    font.loadFromFile("/Users/karimvafin/Documents/Repositories/MIPT/Temperature_distribution/font.ttf");
+    std::string filepath("../font.ttf");
+    font.loadFromFile(filepath);
 }
 
 void Menu::run(sf::RenderWindow& window)
