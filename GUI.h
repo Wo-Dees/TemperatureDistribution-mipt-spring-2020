@@ -5,6 +5,9 @@
 #ifndef TEMPERATURE_DISTRIBUTION_GUI_H
 #define TEMPERATURE_DISTRIBUTION_GUI_H
 
+#include "animation.h"
+#include "menu.h"
+
 class GUI {
 public:
     GUI() = default;
@@ -12,6 +15,8 @@ public:
 
     // mainloop
     void run();
+
+    void next_window(int choice, sf::RenderWindow& window);
 };
 
 

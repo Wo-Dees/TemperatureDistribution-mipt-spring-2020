@@ -7,7 +7,11 @@ set(SOURCE_FILES main.cpp CSRmatrix.cpp CSRmatrix.h special_number.cpp special_n
         animation.cpp
         animation.h
         menu.cpp
-        menu.h)
+        menu.h
+        ResourcePath.hpp
+        Window.cpp
+        Window.h)
+
 add_executable(Temperature_distribution ${SOURCE_FILES})
 include_directories(/usr/local/include)
 

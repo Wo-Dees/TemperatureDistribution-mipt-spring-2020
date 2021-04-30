@@ -6,19 +6,23 @@
 #define TEMPERATURE_DISTRIBUTION_MENU_H
 
 #include <SFML/Graphics.hpp>
+#include <vector>
+#include "Window.h"
 
-class Menu {
+class Menu : public Window{
 private:
-    sf::Font font;
-
-    sf::Text create_text(float x, float y, std::string inf, int size, sf::Color color) const;
+    int choice;
+    sf::Sprite backgr;
 
 public:
     Menu();
     ~Menu() = default;
 
     // main method
-    void run(sf::RenderWindow& window);
+    int run(sf::RenderWindow& window) override;
+    void process_events(sf::RenderWindow& window) override;
+    void button_animation(sf::RenderWindow& window);
+    void draw_objects(sf::RenderWindow& window) override;
 };
 
 

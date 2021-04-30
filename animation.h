@@ -6,14 +6,20 @@
 #define TEMPERATURE_DISTRIBUTION_ANIMATION_H
 
 #include <SFML/Graphics.hpp>
+#include "Window.h"
 
-class Animation {
+class Animation : public Window {
+private:
+    std::vector<sf::RectangleShape> web;
+
 public:
-    Animation() = default;
+    Animation();
     ~Animation() = default;
 
     // main method
-    void run(sf::RenderWindow& window);
+    int run(sf::RenderWindow& window);
+
+    void draw_objects(sf::RenderWindow& window);
 };
 
 
