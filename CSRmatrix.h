@@ -6,6 +6,9 @@
 using std::vector;
 using std::ostream;
 
+// ОРГАНЗОВАТЬ НОРМАЛЬНЫЙ ВЕКТОР, А НЕ ЭТУ КАЛЕКУ (задачка Жене)
+// ОБМАЗАТЬСЯ ИСКЛЧЕНИЯМИ (ещё задачка Жене)
+
 class CSRMatrix {
 private:
     vector<double> value;
@@ -22,18 +25,29 @@ public:
     CSRMatrix(vector<double> value, vector<unsigned int> col, vector<unsigned int> row_index, unsigned int H,
               unsigned int W);
 
+    CSRMatrix();
+
     ~CSRMatrix() = default;
 
-    CSRMatrix operator+(const CSRMatrix &first_matrix);
+    CSRMatrix transpose();
 
-    CSRMatrix operator*(double k) const;
-    // <- два опертора позволяют работать с умножением с двух сторон
-    friend CSRMatrix operator*(double k, const CSRMatrix& matrix);
-    friend ostream &operator<<(ostream &os, CSRMatrix &matrix);
-    friend ostream &operator<<(ostream &os, CSRMatrix &&matrix);
+    double operator()(unsigned i, unsigned j) const;
+    CSRMatrix operator+(const CSRMatrix &first_matrix) const;
+    CSRMatrix operator- (const CSRMatrix& matrix) const;
+    CSRMatrix operator*= (double k);
+    friend ostream &operator<<(ostream &os, const CSRMatrix &matrix);
+    friend ostream &operator<<(ostream &os, const CSRMatrix &&matrix);
 
     void getAsCSR(ostream &os);
-};
+    void setDiag(double element, unsigned N);
+    unsigned int height();
+    unsigned int width();
 
+    CSRMatrix operator*(double k) const;
+    friend CSRMatrix operator*(double k, const CSRMatrix& matrix);
+    std::vector<double> operator*(const std::vector<double>& vector) const;
+
+    friend vector<double> Jacobi(const CSRMatrix& A, const vector<double>& b);
+};
 
 #endif //MATRIX_CSRMATRIX_H

@@ -12,15 +12,26 @@ CSRMatrix::CSRMatrix(vector<double> value, vector<unsigned int> col, vector<unsi
     this->Height = H;
     this->Width = W;
     this->NZ = this->value.size();
-    this->eps = 1.0/(2*2*2*2*2*2*2*2*2*2*2*2*2*2*2*2*2);
+    this->eps = 1/100000.0;
 }
+
+CSRMatrix::CSRMatrix() {
+    this->col = {};
+    this->value= {};
+    this->row_index = {};
+    this->Height = 0;
+    this->Width = 0;
+    this->NZ = 0;
+    this->eps = 1/100000.0;
+}
+
 
 void generate_zeros(ostream& os, unsigned int am)
 {
     for (int i = 0; i < am; i++)
         os << "0 ";
 }
-ostream &operator<<(ostream &os, CSRMatrix &matrix) { // <- working
+ostream &operator<<(ostream &os, const CSRMatrix &matrix){ // <- working
     for (int i = 0; i < matrix.Height; i++)
     {
         os << "|| ";
@@ -61,12 +72,12 @@ CSRMatrix operator*(double k, const CSRMatrix &matrix) {
     return matrix*k;
 }
 
-ostream &operator<<(ostream &os, CSRMatrix &&matrix) { // <- working
+ostream &operator<<(ostream &os, const CSRMatrix &&matrix) { // <- working
     os << matrix;
     return os;
 }
 
-CSRMatrix CSRMatrix::operator+(const CSRMatrix &first_matrix) {
+CSRMatrix CSRMatrix::operator+(const CSRMatrix &first_matrix) const{
     std::vector<double> val;
     std::vector<unsigned int> cols;
     std::vector<unsigned int> row_ind;
@@ -99,7 +110,7 @@ CSRMatrix CSRMatrix::operator+(const CSRMatrix &first_matrix) {
                     element_in_second_string++;
                 }
                 if (col1 == col2) {
-                    if (std::abs(val1 + val2) > this->eps) {
+                    if (std::abs(val1 + val2) > CSRMatrix::eps) {
                         val.push_back(val2 + val1);
                         am_of_pushs++;
                         cols.push_back(col2);
@@ -161,4 +172,65 @@ void CSRMatrix::getAsCSR(ostream &os) {
     }else {
         os << "Row Indexes [];" << std::endl;
     }
+}
+
+CSRMatrix CSRMatrix::operator*=(double k){
+    for (int i = 0; i < this->NZ; i++)
+    {
+        this->value[i] *= k;
+    }
+    return *this;
+}
+
+CSRMatrix CSRMatrix::operator-(const CSRMatrix &matrix) const {
+    return *this+(-1)*matrix;
+}
+
+CSRMatrix CSRMatrix::transpose() {
+
+}
+
+unsigned int CSRMatrix::height() {
+    return this->Height;
+}
+
+unsigned int CSRMatrix::width() {
+    return this->Width;
+}
+
+std::vector<double> CSRMatrix::operator*(const vector<double> &vector) const {
+    std::vector<double> multi;
+    for (unsigned int str_number = 0; str_number < this->Height; ++str_number)
+    {
+        double element = 0;
+        for(unsigned int num_of_elem = this->row_index[str_number]; num_of_elem < this->row_index[str_number + 1] ; ++num_of_elem)
+            element += this->value[num_of_elem] * vector[this->col[num_of_elem]];
+        multi.push_back(element);
+    }
+    return multi;
+}
+
+void CSRMatrix::setDiag(double element, unsigned int N) {
+    this->row_index.resize(0);
+    this->col.resize(0);
+    this->value.resize(0);
+
+    for (unsigned i = 0; i < N; ++i)
+    {
+        this->value.push_back(element);
+        this->col.push_back(i);
+        this->row_index.push_back(i);
+    }
+    row_index.push_back(N);
+    this->Height = this->Width = N;
+    this->NZ = N;
+}
+
+double CSRMatrix::operator()(unsigned int i, unsigned int j) const{
+    for (unsigned num_of_elem = this->row_index[i]; num_of_elem < this->row_index[i+1]; ++num_of_elem)
+    {
+        if (this->col[num_of_elem] == j)
+            return this->value[num_of_elem];
+    }
+    return 0;
 }
