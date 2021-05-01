@@ -8,7 +8,6 @@ set(SOURCE_FILES main.cpp CSRmatrix.cpp CSRmatrix.h Solvers.h special_number.cpp
         animation.h
         menu.cpp
         menu.h
-        ResourcePath.hpp
         Window.cpp
         Window.h)
 

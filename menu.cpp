@@ -3,7 +3,6 @@
 //
 
 #include "menu.h"
-#include "ResourcePath.hpp"
 #include <string>
 
 Menu::Menu()
@@ -88,7 +87,7 @@ void Menu::button_animation(sf::RenderWindow &window)
                     window.close();
             }
 
-            texts[i].move(200, 0);
+            texts[i].move(100, 0);
             window.clear(sf::Color::White);
             window.draw(backgr);
             for (int k = 0; k <= i; k++)
