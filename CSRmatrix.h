@@ -1,3 +1,7 @@
+//
+// Created by evgen on 28.04.2021.
+//
+
 #ifndef MATRIX_CSRMATRIX_H
 #define MATRIX_CSRMATRIX_H
 
@@ -10,6 +14,10 @@ using std::ostream;
 // ОБМАЗАТЬСЯ ИСКЛЧЕНИЯМИ (ещё задачка Жене)
 
 class CSRMatrix {
+
+    friend vector<double> Jacobi(const CSRMatrix& A, const vector<double>& b);
+    friend vector<double> GaussZeidel(const CSRMatrix& A, const vector<double>& b);
+
 private:
     vector<double> value;
     vector<unsigned int> col;
@@ -46,8 +54,6 @@ public:
     CSRMatrix operator*(double k) const;
     friend CSRMatrix operator*(double k, const CSRMatrix& matrix);
     std::vector<double> operator*(const std::vector<double>& vector) const;
-
-    friend vector<double> Jacobi(const CSRMatrix& A, const vector<double>& b);
 };
 
 #endif //MATRIX_CSRMATRIX_H

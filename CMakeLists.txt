@@ -3,7 +3,7 @@ project(Temperature_distribution)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-set(SOURCE_FILES main.cpp CSRmatrix.cpp CSRmatrix.h Solvers.h special_number.cpp special_number.h GUI.cpp GUI.h
+set(SOURCE_FILES main.cpp CSRmatrix.cpp CSRmatrix.h Solvers.h Vector.h special_number.cpp special_number.h GUI.cpp GUI.h
         animation.cpp
         animation.h
         menu.cpp

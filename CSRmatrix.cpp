@@ -53,8 +53,11 @@ ostream &operator<<(ostream &os, const CSRMatrix &matrix){ // <- working
         }
         if ((matrix.Width - matrix.col[endning_of_string - 1] - 1) >= 0)
             generate_zeros(os, (unsigned int)(matrix.Width - matrix.col[endning_of_string - 1]) - 1);
-        os << "||" << std::endl;
+        if (i < matrix.Height - 1) os << "||" << std::endl;
+        else os << "|| ";
     }
+
+    os <<"(" << matrix.Height << "x" << matrix.Width << ")"<<std::endl;
     return os;
 }
 
