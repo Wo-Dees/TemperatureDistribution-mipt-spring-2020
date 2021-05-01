@@ -10,9 +10,6 @@
 using std::vector;
 using std::ostream;
 
-// ОРГАНЗОВАТЬ НОРМАЛЬНЫЙ ВЕКТОР, А НЕ ЭТУ КАЛЕКУ (задачка Жене)
-// ОБМАЗАТЬСЯ ИСКЛЧЕНИЯМИ (ещё задачка Жене)
-
 class CSRMatrix {
 
     friend vector<double> Jacobi(const CSRMatrix& A, const vector<double>& b);
@@ -53,7 +50,7 @@ public:
 
     CSRMatrix operator*(double k) const;
     friend CSRMatrix operator*(double k, const CSRMatrix& matrix);
-    std::vector<double> operator*(const std::vector<double>& vector) const;
+    vector<double> operator*(const vector<double>& vector) const;
 };
 
 #endif //MATRIX_CSRMATRIX_H

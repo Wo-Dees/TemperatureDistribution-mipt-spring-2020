@@ -6,6 +6,10 @@
 
 vector<double> Jacobi(const CSRMatrix& A, const vector<double>& b)
 {
+    if (A.Height != A.Width) throw std::runtime_error("Matrix isn't squared");
+    for (unsigned i = 0; i < A.Height; i++)
+        if (A(i,i) == 0) throw std::runtime_error("Zero on position (" + std::to_string(i) + ", " + std::to_string(i) + ")");
+
     vector<double> r(b.size());
     vector<double> x(b.size());
     vector<double> x_next(b.size());
@@ -28,6 +32,10 @@ vector<double> Jacobi(const CSRMatrix& A, const vector<double>& b)
 
 vector<double> GaussZeidel(const CSRMatrix& A, const vector<double>& b)
 {
+    if (A.Height != A.Width) throw std::runtime_error("Matrix isn't squared");
+    for (unsigned i = 0; i < A.Height; i++)
+        if (A(i,i) == 0) throw std::runtime_error("Zero on position (" + std::to_string(i) + ", " + std::to_string(i) + ")");
+
     vector<double> r(b.size());
     vector<double> x(b.size());
 

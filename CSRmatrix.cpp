@@ -4,8 +4,13 @@
 
 #include "CSRmatrix.h"
 #include <iostream>
+#include <algorithm>
 
 CSRMatrix::CSRMatrix(vector<double> value, vector<unsigned int> col, vector<unsigned int> row_index, unsigned int H, unsigned int W) {
+    if (row_index.size() != H+1) throw std::runtime_error("Invalid creation CSR (row_index.size != martrix height + 1)");
+    if (value.size() != col.size()) throw std::runtime_error("Invalid creation CSR (udefined amount of not zero elements)");
+    if (row_index[H] != col.size()) throw std::runtime_error("Invalid creation CSR (incorrect data)");
+    if (*std::max_element(col.begin(), col.end()) >= W) throw std::runtime_error("Invalid creation CSR (incorrect data)");
     this->col = std::move(col);
     this->row_index = std::move(row_index);
     this->value = std::move(value);
@@ -35,28 +40,11 @@ ostream &operator<<(ostream &os, const CSRMatrix &matrix){ // <- working
     for (int i = 0; i < matrix.Height; i++)
     {
         os << "|| ";
-        unsigned int begining_of_string = matrix.row_index[i];
-        unsigned int endning_of_string = matrix.row_index[i+1];
-
-        if (begining_of_string == endning_of_string) {
-            generate_zeros(os, matrix.Width);
-            os << "||" << std::endl;
-            continue;
-        }
-        generate_zeros(os, matrix.col[begining_of_string]);
-        os << matrix.value[begining_of_string] << " ";
-
-        for(unsigned int k = begining_of_string + 1; k < endning_of_string; k++)
-        {
-            generate_zeros(os, matrix.col[k] - matrix.col[k-1] - 1);
-            os << matrix.value[k] << " ";
-        }
-        if ((matrix.Width - matrix.col[endning_of_string - 1] - 1) >= 0)
-            generate_zeros(os, (unsigned int)(matrix.Width - matrix.col[endning_of_string - 1]) - 1);
-        if (i < matrix.Height - 1) os << "||" << std::endl;
-        else os << "|| ";
+        for (int j = 0; j < matrix.Width; j++)
+            os << matrix(i, j) << " ";
+        if (i != matrix.Height - 1) os << "||" << std::endl;
+        else os << "||";
     }
-
     os <<"(" << matrix.Height << "x" << matrix.Width << ")"<<std::endl;
     return os;
 }
@@ -81,71 +69,42 @@ ostream &operator<<(ostream &os, const CSRMatrix &&matrix) { // <- working
 }
 
 CSRMatrix CSRMatrix::operator+(const CSRMatrix &first_matrix) const{
+    std::vector<unsigned> using_cols(this->Width, -1); // массив для отмечаний уже использованных столбцов
+    std::vector<unsigned> tmp_cols; //временный сol
+    std::vector<unsigned> cols;  //будущий cols
+    std::vector<unsigned> row_ind(this->Height + 1);
+    std::vector<double> tmp_value; //временный массив значений сложенных строк
     std::vector<double> val;
-    std::vector<unsigned int> cols;
-    std::vector<unsigned int> row_ind;
-    row_ind.push_back(0);
-    for (int i = 0; i < this->Height; i++) {
-        unsigned int ending_of_first_string = first_matrix.row_index[i + 1];
-        unsigned int ending_of_second_string = this->row_index[i+1];
-        unsigned int element_in_first_string = first_matrix.row_index[i];;
-        unsigned int element_in_second_string = this->row_index[i];
-
-        int am_of_pushs = 0;
-
-        while (element_in_first_string < ending_of_first_string || element_in_second_string < ending_of_second_string)
-        {
-            if (element_in_second_string < ending_of_second_string && element_in_first_string < ending_of_first_string) {
-                double val1 = first_matrix.value[element_in_first_string];
-                double val2 = this->value[element_in_second_string];
-                unsigned int col1 = first_matrix.col[element_in_first_string];
-                unsigned int col2 = this->col[element_in_second_string];
-                if (col1 < col2) {
-                    val.push_back(val1);
-                    am_of_pushs++;
-                    cols.push_back(col1);
-                    element_in_first_string++;
-                }
-                if (col1 > col2) {
-                    val.push_back(val2);
-                    am_of_pushs++;
-                    cols.push_back(col2);
-                    element_in_second_string++;
-                }
-                if (col1 == col2) {
-                    if (std::abs(val1 + val2) > CSRMatrix::eps) {
-                        val.push_back(val2 + val1);
-                        am_of_pushs++;
-                        cols.push_back(col2);
-                    }
-                    element_in_first_string++;
-                    element_in_second_string++;
-                }
+    row_ind[0] = 0;
+    // слияние индексов столбцов ненулевых элементов в один массив строки i
+    for(size_t i = 0; i < this->Height; ++i) {
+        tmp_value.resize(this->Width);
+        for(unsigned j = this->row_index[i]; j < this->row_index[i + 1]; ++j){
+            if(using_cols[this->col[j]] != i){
+                using_cols[this->col[j]] = i;          //ставим метку, что в текущей строке столбец cols[j] учтен
+                tmp_cols.emplace_back(this->col[j]);   //во временный масив столбцов записываем номер столбца
             }
-            if (element_in_second_string < ending_of_second_string && element_in_first_string >= ending_of_first_string)
-            {
-                for (unsigned int elem = element_in_second_string; elem < ending_of_second_string; elem++)
-                {
-                    val.push_back(this->value[elem]);
-                    am_of_pushs++;
-                    cols.push_back(this->col[elem]);
-                    element_in_second_string++;
-                }
-            }
-            if (element_in_second_string >= ending_of_second_string && element_in_first_string < ending_of_first_string)
-            {
-                for (unsigned int elem = element_in_first_string; elem < ending_of_first_string; elem++)
-                {
-                    val.push_back(first_matrix.value[elem]);
-                    am_of_pushs++;
-                    cols.push_back(first_matrix.col[elem]);
-                    element_in_first_string++;
-                }
-            }
+            tmp_value[this->col[j]] = this->value[j];  //записать значения строки из массива А в суммирующую строку(плотное представление строки)
         }
-        row_ind.push_back(row_ind[i]+am_of_pushs);
+        for(unsigned j = first_matrix.row_index[i]; j < first_matrix.row_index[i + 1]; ++j){
+            if(using_cols[first_matrix.col[j]] != i){
+                using_cols[first_matrix.col[j]] = i;
+                tmp_cols.emplace_back(first_matrix.col[j]);
+            }
+            tmp_value[first_matrix.col[j]] += first_matrix.value[j]; //прибавление значений из строки массива B к суммирующей строке
+        }
+        for(const auto& j: tmp_cols){
+            if(std::abs(tmp_value[j]) > this->eps ){
+                cols.emplace_back(j);
+                val.emplace_back(tmp_value[j]);
+            } else continue;
+        }
+        row_ind[i + 1] = cols.size();
+        tmp_cols.clear();
+        tmp_value.clear();
     }
-    return CSRMatrix(val, cols, row_ind, this->Height, this->Width);
+    CSRMatrix newmat(val, cols, row_ind, this->Height, this->Width);
+    return newmat;
 }
 
 void CSRMatrix::getAsCSR(ostream &os) {
