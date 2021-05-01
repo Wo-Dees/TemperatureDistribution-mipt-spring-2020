@@ -6,8 +6,8 @@
 
 Window::Window()
 {
-    std::string filepath("../Additional/Vampire95 Regular.ttf");
-    font.loadFromFile(filepath);
+    if (!font.loadFromFile("../Adfditional/Vampire95 Regular.ttf"))
+        throw std::exception();
 }
 
 sf::Text& Window::create_text(float x, float y, std::string inf, int size, sf::Color color)

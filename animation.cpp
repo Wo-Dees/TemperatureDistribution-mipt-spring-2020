@@ -7,7 +7,8 @@
 
 Animation::Animation()
 {
-    font.loadFromFile("/Users/karimvafin/Documents/Repositories/MIPT/Temperature_distribution/Additional/Opel Sans Bold.ttf");
+    if (!font.loadFromFile("../Additional/Opel Sans Bold.ttf"))
+        throw std::exception();
     int x = 1920 / 4;
     int y = 1080 / 4;
     int color1 = 0;
