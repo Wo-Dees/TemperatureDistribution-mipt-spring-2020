@@ -7,7 +7,7 @@
 
 Animation::Animation()
 {
-    font.loadFromFile("/Users/karimvafin/Documents/Repositories/MIPT/Temperature_distribution/Additional/Opel Sans Bold.ttf");
+    font.loadFromFile("../Additional/Opel Sans Bold.ttf");
     int x = 1920 / 2;
     int y = 1080 / 2;
     int color1 = 0;
