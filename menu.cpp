@@ -14,7 +14,7 @@ int Menu::run(sf::RenderWindow& window)
 {
     choice = 0;
     sf::Texture background;
-    background.loadFromFile("/Users/karimvafin/Documents/Repositories/MIPT/Temperature_distribution/Additional/temp_dist.jpeg");
+    background.loadFromFile("../Additional/temp_dist.jpeg");
     backgr.setTexture(background);
     sf::Text title = create_text(250, 70, "Temperature distribution", 100, sf::Color::White);
     sf::Text text1 = create_text(325, 330, "Start", 80, sf::Color::White);
