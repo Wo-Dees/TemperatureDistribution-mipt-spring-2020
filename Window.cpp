@@ -6,7 +6,7 @@
 
 Window::Window()
 {
-    std::string filepath("/Users/karimvafin/Documents/Repositories/MIPT/Temperature_distribution/Vampire95 Regular.ttf");
+    std::string filepath("/Users/karimvafin/Documents/Repositories/MIPT/Temperature_distribution/Additional/Vampire95 Regular.ttf");
     font.loadFromFile(filepath);
 }
 
