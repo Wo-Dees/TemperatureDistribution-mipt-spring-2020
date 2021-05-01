@@ -8,37 +8,39 @@
 Animation::Animation()
 {
     font.loadFromFile("/Users/karimvafin/Documents/Repositories/MIPT/Temperature_distribution/Additional/Opel Sans Bold.ttf");
-    int x = 1920 / 2;
-    int y = 1080 / 2;
+    int x = 1920 / 4;
+    int y = 1080 / 4;
     int color1 = 0;
     int color2 = 0;
     int color3 = 0;
-    web.reserve(1920 / 2 * 1080 / 2);
+    web.reserve(1920 / 4 * 1080 / 4);
     for (int i = 0; i < y; i++)
     {
         for (int j = 0; j < x; j++)
         {
             sf::RectangleShape rect;
-            rect.setPosition(float(2 * j), float(2 * i));
-            rect.setSize(sf::Vector2f(2, 2));
+            rect.setPosition(float(4 * j), float(4 * i));
+            rect.setSize(sf::Vector2f(4, 4));
             rect.setFillColor(sf::Color(color1, color2, color3));
             web.push_back(rect);
         }
-        if (i % 5 == 0)
+        if (i % 3 == 0)
         {
             color1++;
+            color3++;
         }
         else
-            if (i % 5 == 1)
+            if (i % 3 == 1)
             {
                 color2++;
-                color1--;
+                color3--;
             }
             else
-                if (i % 5 == 2)
+                if (i % 3 == 2)
                 {
                     color3++;
                     color2--;
+                    color1++;
                 }
     }
 }
