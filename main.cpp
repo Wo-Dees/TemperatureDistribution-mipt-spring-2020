@@ -2,18 +2,31 @@
 #include "CSRmatrix.h"
 #include "Solvers.h"
 #include <iostream>
+#include <fstream>
+#include "difference_scheme.h"
+
 
 int main()
 {
     try{
 //        GUI gui;
 //        gui.run();
-        CSRMatrix m1({1, 4, 9,3 , 5, 3, 1, 4},{0, 1, 3,3,2,2,0,3},{0,1,3,5,8}, 4, 4);
-        CSRMatrix m2;
-        m2.setDiag(1,4);
-        std::cout << m1 << std::endl;
-        std::cout.precision(10);
-        std::cout <<"Matrix :" <<std::endl<< 2*m2+m1 << std::endl<< "Solution: " << std::endl <<  GaussZeidel(m2+m2+m1, {1, 1, 1, 1});
+        // реализация разностной схемы
+        vector<vector<double>> data(COUNT_STEP_TIME);
+        difference_scheme(data, platinum, 100, 500, 100, 100);
+        // запись в файл
+        std::ofstream out;
+        out.open("/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/data.txt");
+        out.precision(3);
+        for (auto item : data) {
+            for (unsigned int i = 0; i < COUNT_STEP_LEN; i++) {
+                for (unsigned int j = 0; j < COUNT_STEP_LEN; j++) {
+                    out << item[i * COUNT_STEP_LEN + j] << " ";
+                }
+                out << std::endl;
+            }
+            out << std::endl;
+        }
         return 0;
     } catch (std::runtime_error& er) {
         std::cout << "Zhenya what the fuck" << std::endl;
@@ -21,6 +34,7 @@ int main()
     } catch (std::exception& ex) {
         std::cout << "Some files are failed to be loaded" << std::endl;
     }
+
     return 0;
 }
 
