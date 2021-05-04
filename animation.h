@@ -16,17 +16,21 @@ private:
     int size_of_rect;
 
 public:
-    Animation();
+    Animation(sf::RenderWindow& win);
     ~Animation() = default;
 
     // main method
-    int run(sf::RenderWindow& window);
+    int run() override;
 
-    void draw_objects(sf::RenderWindow& window);
+    void draw_objects() override;
 
     void set_temperature();
 
-    void process_events(sf::RenderWindow& window);
+    void process_events();
+
+    int get_number_of_current_element();
+
+    void heat_near_elements(unsigned int x);
 };
 
 

@@ -5,12 +5,12 @@
 #include "menu.h"
 #include <string>
 
-Menu::Menu()
+Menu::Menu(sf::RenderWindow& win) : Window(win)
 {
     choice = 0;
 }
 
-int Menu::run(sf::RenderWindow& window)
+int Menu::run()
 {
     choice = 0;
     sf::Texture background;
@@ -24,7 +24,7 @@ int Menu::run(sf::RenderWindow& window)
     sf::RectangleShape button1 = create_button(290, 310, 300, 80, sf::Color::White);
     sf::RectangleShape button2 = create_button(290, 510, 300, 80, sf::Color::White);
     sf::RectangleShape button3 = create_button(290, 710, 300, 80, sf::Color::White);
-    button_animation(window);
+    button_animation();
     while (window.isOpen())
     {
         sf::Event event;
@@ -34,10 +34,10 @@ int Menu::run(sf::RenderWindow& window)
             if (event.type == sf::Event::Closed)
                 window.close();
         }
-        process_events(window);
+        process_events();
         window.clear(sf::Color::White);
         window.draw(backgr);
-        draw_objects(window);
+        draw_objects();
         window.display();
         if (choice != 0)
             break;
@@ -45,7 +45,7 @@ int Menu::run(sf::RenderWindow& window)
     return choice;
 }
 
-void Menu::process_events(sf::RenderWindow& window)
+void Menu::process_events()
 {
     sf::Vector2i m_pos = sf::Mouse::getPosition(window);
     int i = 0;
@@ -72,7 +72,7 @@ void Menu::process_events(sf::RenderWindow& window)
     }
 }
 
-void Menu::button_animation(sf::RenderWindow &window)
+void Menu::button_animation()
 {
     for (int i = 0; i < texts.size(); i++)
     {
@@ -108,7 +108,7 @@ void Menu::button_animation(sf::RenderWindow &window)
     }
 }
 
-void Menu::draw_objects(sf::RenderWindow &window)
+void Menu::draw_objects()
 {
     for (auto& btn : buttons)
         window.draw(btn);

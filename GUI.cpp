@@ -16,9 +16,8 @@ void GUI::run()
         throw std::exception();
     }
     window.setIcon(500, 500, icon.getPixelsPtr());
-    Menu menu;
-    Animation anim;
-    int choice = menu.run(window);
+    Menu menu(window);
+    int choice = menu.run();
     next_window(choice, window);
 }
 
@@ -27,7 +26,7 @@ void GUI::next_window(int choice, sf::RenderWindow& window)
     switch (choice)
     {
         case 1:
-            Animation anim;
-            anim.run(window);
+            Animation anim(window);
+            anim.run();
     }
 }

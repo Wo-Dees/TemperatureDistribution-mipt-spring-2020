@@ -12,20 +12,22 @@ protected:
     sf::Font font;
     std::vector<sf::Text> texts;
     std::vector<sf::RectangleShape> buttons;
+    sf::RenderWindow& window;
 
 public:
-    Window();
+    Window(sf::RenderWindow& win);
+
     virtual ~Window() = default;
 
-    virtual int run(sf::RenderWindow& window) = 0;
+    virtual int run() = 0;
 
     sf::Text& create_text(float x, float y, std::string inf, int size, sf::Color color);
 
     sf::RectangleShape& create_button(float pos_x, float pos_y, float size_x, float size_y, sf::Color color);
 
-    virtual void process_events(sf::RenderWindow& window){};
+    virtual void process_events(){};
 
-    virtual void draw_objects(sf::RenderWindow& window);
+    virtual void draw_objects();
 };
 
 

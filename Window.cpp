@@ -4,7 +4,7 @@
 
 #include "Window.h"
 
-Window::Window()
+Window::Window(sf::RenderWindow& win) : window(win)
 {
     if (!font.loadFromFile("../Additional/Vampire95 Regular.ttf"))
         throw std::exception();
@@ -31,7 +31,7 @@ sf::RectangleShape& Window::create_button(float pos_x, float pos_y, float size_x
     return *buttons.rbegin();
 }
 
-void Window::draw_objects(sf::RenderWindow& window)
+void Window::draw_objects()
 {
     for (auto& btn : buttons)
         window.draw(btn);

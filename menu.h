@@ -15,14 +15,14 @@ private:
     sf::Sprite backgr;
 
 public:
-    Menu();
+    Menu(sf::RenderWindow& win);
     ~Menu() = default;
 
     // main method
-    int run(sf::RenderWindow& window) override;
-    void process_events(sf::RenderWindow& window) override;
-    void button_animation(sf::RenderWindow& window);
-    void draw_objects(sf::RenderWindow& window) override;
+    int run() override;
+    void process_events() override;
+    void button_animation();
+    void draw_objects() override;
 };
 
 
