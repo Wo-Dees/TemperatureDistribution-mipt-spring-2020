@@ -11,6 +11,9 @@
 class Animation : public Window {
 private:
     std::vector<sf::RectangleShape> web;
+    std::vector<double> temperature;
+    std::vector<std::vector<double>> temp_mas;
+    int size_of_rect;
 
 public:
     Animation();
@@ -20,6 +23,10 @@ public:
     int run(sf::RenderWindow& window);
 
     void draw_objects(sf::RenderWindow& window);
+
+    void set_temperature();
+
+    void process_events(sf::RenderWindow& window);
 };
 
 

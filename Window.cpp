@@ -6,7 +6,7 @@
 
 Window::Window()
 {
-    if (!font.loadFromFile("../Adfditional/Vampire95 Regular.ttf"))
+    if (!font.loadFromFile("../Additional/Vampire95 Regular.ttf"))
         throw std::exception();
 }
 
