@@ -9,7 +9,7 @@ Animation::Animation(sf::RenderWindow& win) : Window(win)
 {
     if (!font.loadFromFile("../Additional/Opel Sans Bold.ttf"))
         throw std::exception();
-    size_of_rect = 20;
+    size_of_rect = 10;
     int x = 1920 / size_of_rect;
     int y = 1080 / size_of_rect;
     web.reserve(1920 / size_of_rect * 1080 / size_of_rect);
@@ -26,7 +26,6 @@ Animation::Animation(sf::RenderWindow& win) : Window(win)
     temperature.reserve(web.size());
     for (int i = 0; i < web.size(); i++)
         temperature.push_back(0);
-    temperature[2560] = 100;
 }
 
 int Animation::run()
@@ -46,7 +45,7 @@ int Animation::run()
         if (x >= 0 && x < temperature.size())
             temp.setString(std::to_string(int(temperature[x])) + "C");
         window.clear();
-        //process_events(window);
+        process_events();
         set_temperature();
         draw_objects();
         window.display();
@@ -66,6 +65,8 @@ void Animation::set_temperature()
 {
     for (int i = 0; i < web.size(); i++)
     {
+        if (temperature[i] > 0)
+            temperature[i] -= 0.01;
         int color1 = 0;
         int color2 = 0;
         int color3 = 0;
@@ -91,29 +92,14 @@ void Animation::set_temperature()
 
 void Animation::process_events()
 {
-    sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
-    int y = mouse_pos.y / size_of_rect;
-    int x = mouse_pos.x / size_of_rect;
-    for (int j = 0; j < 50; j++)
-        for (int i = 0; i < 50; i++)
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+    {
+        int x = get_number_of_current_element();
+        if (x >= 0 && x < temperature.size())
         {
-            if (abs(j) + abs(i) < 100)
-            {
-                unsigned int a = window.getSize().x / size_of_rect * (y - i) + x + j;
-                unsigned int b = window.getSize().x / size_of_rect * (y + i) + x - j;
-                unsigned int c = window.getSize().x / size_of_rect * (y - i) + x - j;
-                unsigned int d = window.getSize().x / size_of_rect * (y + i) + x + j;
-                int e = temperature.size();
-                if (a >= 0 && a < e && temperature[a] < 100)
-                    temperature[a] += 0.05 / (i + 1) / (j + 1) * 10;
-                if (b >= 0 && b < e && temperature[b] < 100)
-                    temperature[b] += 0.05 / (i + 1) / (j + 1) * 10;
-                if (c >= 0 && c < e && temperature[c] < 100)
-                    temperature[c] += 0.05 / (i + 1) / (j + 1) * 10;
-                if (d >= 0 && d < e && temperature[d] < 100)
-                    temperature[d] += 0.05 / (i + 1) / (j + 1) * 10;
-            }
+            temperature[x] += 10;
         }
+    }
 }
 
 int Animation::get_number_of_current_element()
@@ -130,12 +116,24 @@ void Animation::heat_near_elements(unsigned int x)
     std::vector<int> vec;
     vec.push_back(x);
     vec.push_back(x + 1);
+    vec.push_back(x + 2);
     vec.push_back(x + window.getSize().x / size_of_rect);
+    vec.push_back(x + window.getSize().x / size_of_rect + 1);
+    vec.push_back(x + window.getSize().x / size_of_rect - 1);
+    vec.push_back(x + 2 * window.getSize().x / size_of_rect);
     vec.push_back(x - 1);
+    vec.push_back(x - 2);
+    vec.push_back(x - window.getSize().x / size_of_rect + 1);
+    vec.push_back(x - window.getSize().x / size_of_rect - 1);
     vec.push_back(x - window.getSize().x / size_of_rect);
-    for (int i = 0; i < 5; i++)
+    vec.push_back(x - 2 * window.getSize().x / size_of_rect);
+    for (int i = 0; i < vec.size(); i++)
     {
         if (vec[i] >= 0 && vec[i] < temperature.size() && temperature[vec[i]] < temperature[vec[0]])
+        {
+            double t_start = temperature[vec[i]];
             temperature[vec[i]] += (temperature[vec[0]] - temperature[vec[i]]) * 0.1;
+            temperature[vec[0]] -= (temperature[vec[0]] - t_start) * 0.05;
+        }
     }
 }
