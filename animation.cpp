@@ -10,9 +10,9 @@ Animation::Animation(sf::RenderWindow& win) : Window(win)
     if (!font.loadFromFile("../Additional/Opel Sans Bold.ttf"))
         throw std::exception();
     size_of_rect = 10;
-    int x = 1920 / size_of_rect;
-    int y = 1080 / size_of_rect;
-    web.reserve(1920 / size_of_rect * 1080 / size_of_rect);
+    int x = window.getSize().x / size_of_rect;
+    int y = window.getSize().y / size_of_rect;
+    web.reserve(window.getSize().x / size_of_rect * window.getSize().y / size_of_rect);
     for (int i = 0; i < y; i++)
     {
         for (int j = 0; j < x; j++)
@@ -30,8 +30,7 @@ Animation::Animation(sf::RenderWindow& win) : Window(win)
 
 int Animation::run()
 {
-    sf::Text& temp = create_text(20, 980, "Temp", 50, sf::Color::White);
-    int i = 0;
+    sf::Text& temp = create_text(20, window.getSize().y - 100, "Temp", 50, sf::Color::White);
     while (window.isOpen())
     {
         sf::Event event;
@@ -71,12 +70,12 @@ void Animation::set_temperature()
         int color2 = 0;
         int color3 = 0;
         int color = int(temperature.at(i) * 5);
-        if (color < 128)
+        if (color < 100)
             color1 = color;
         else
         {
-            color1 = 128;
-            color -= 128;
+            color1 = 100;
+            color -= 100;
             if (color1 + color / 2 < 256)
                 color1 += color / 2;
             else color1 = 255;
@@ -98,6 +97,15 @@ void Animation::process_events()
         if (x >= 0 && x < temperature.size())
         {
             temperature[x] += 10;
+        }
+    }
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
+    {
+        int x = get_number_of_current_element();
+        if (x >= 0 && x < temperature.size())
+        {
+            if (temperature[x] > 0)
+                temperature[x] -= 10;
         }
     }
 }
@@ -133,7 +141,7 @@ void Animation::heat_near_elements(unsigned int x)
         {
             double t_start = temperature[vec[i]];
             temperature[vec[i]] += (temperature[vec[0]] - temperature[vec[i]]) * 0.1;
-            temperature[vec[0]] -= (temperature[vec[0]] - t_start) * 0.05;
+            temperature[vec[0]] -= (temperature[vec[0]] - t_start) * 0.04;
         }
     }
 }
