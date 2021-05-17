@@ -4,12 +4,14 @@
 
 #include "animation.h"
 #include <iostream>
+#include <unistd.h>
 
-Animation::Animation(sf::RenderWindow& win) : Window(win)
+Animation::Animation(sf::RenderWindow& win, std::queue<std::vector<double>> data) : Window(win)
 {
+    this->data = data;
     if (!font.loadFromFile("../Additional/Opel Sans Bold.ttf"))
         throw std::exception();
-    size_of_rect = 10;
+    size_of_rect = 20;
     int x = window.getSize().x / size_of_rect;
     int y = window.getSize().y / size_of_rect;
     web.reserve(window.getSize().x / size_of_rect * window.getSize().y / size_of_rect);
@@ -30,6 +32,8 @@ Animation::Animation(sf::RenderWindow& win) : Window(win)
 
 int Animation::run()
 {
+    unsigned long int counter = 0;
+    std::cout << this->data.size();
     sf::Text& temp = create_text(20, window.getSize().y - 100, "Temp", 50, sf::Color::White);
     while (window.isOpen())
     {
@@ -42,12 +46,29 @@ int Animation::run()
         }
         int x = get_number_of_current_element();
         if (x >= 0 && x < temperature.size())
-            temp.setString(std::to_string(int(temperature[x])) + "C");
+            temp.setString(std::to_string(int(temperature[x])) + "C | " + std::to_string(sf::Mouse::getPosition(window).x));
         window.clear();
-        process_events();
+        if (!data.empty())
+        {
+            for (int i = 0; i < data.front().size(); ++i)
+            {
+                temperature[i] = data.front()[i];
+            }
+            if (!data.empty())
+                data.pop();
+            if (!data.empty())
+                data.pop();
+            if (!data.empty())
+                data.pop();
+            if (!data.empty())
+                data.pop();
+        }
+        //process_events();
         set_temperature();
         draw_objects();
         window.display();
+        counter++;
+//        sleep(1);
     }
     return 0;
 }
@@ -64,8 +85,8 @@ void Animation::set_temperature()
 {
     for (int i = 0; i < web.size(); i++)
     {
-        if (temperature[i] > 0)
-            temperature[i] -= 0.01;
+//        if (temperature[i] > 0)
+//            temperature[i] -= 0.01;
         int color1 = 0;
         int color2 = 0;
         int color3 = 0;
@@ -85,7 +106,7 @@ void Animation::set_temperature()
                 color2 = 255;
         }
         web[i].setFillColor(sf::Color(color1, color2, color3));
-        heat_near_elements(i);
+        //heat_near_elements(i);
     }
 }
 
@@ -113,7 +134,7 @@ void Animation::process_events()
 int Animation::get_number_of_current_element()
 {
     sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
-    int y = mouse_pos.y / size_of_rect;
+    int y = (mouse_pos.y + 1) / size_of_rect;
     int x = mouse_pos.x / size_of_rect;
     std::vector<int> vec;
     return window.getSize().x / size_of_rect * y + x;

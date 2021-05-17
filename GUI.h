@@ -7,10 +7,15 @@
 
 #include "animation.h"
 #include "menu.h"
+#include <queue>
+#include <vector>
 
 class GUI {
+private:
+    std::queue<std::vector<double>> data;
+
 public:
-    GUI() = default;
+    GUI(std::queue<std::vector<double>>& data);
     ~GUI() = default;
 
     // mainloop

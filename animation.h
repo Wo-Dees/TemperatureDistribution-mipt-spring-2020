@@ -7,6 +7,8 @@
 
 #include <SFML/Graphics.hpp>
 #include "Window.h"
+#include <queue>
+#include <vector>
 
 class Animation : public Window {
 private:
@@ -14,9 +16,10 @@ private:
     std::vector<double> temperature;
     std::vector<std::vector<double>> temp_mas;
     int size_of_rect;
+    std::queue<std::vector<double>> data;
 
 public:
-    Animation(sf::RenderWindow& win);
+    Animation(sf::RenderWindow& win, std::queue<std::vector<double>> data);
     ~Animation() = default;
 
     // main method

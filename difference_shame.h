@@ -34,7 +34,7 @@ const map <material, double> data_of_material = {{aluminum, 209.3}, {iron, 74.4}
                                            {lead, 35.0}, {mercury, 29.1}, {titanium, 18.0}};
 
 // Уровень дискретизация
-const unsigned int COUNT_STEP_LEN = 20; // будет 50 узлов сетки по длине
+const unsigned int COUNT_STEP_LEN = 50; // будет 50 узлов сетки по длине
 const unsigned int COUNT_STEP_TIME = 1000; // будет 1000 узлов сетки по времени
 
 //------------------------------------------------------------------------------------------------------------------------------------
@@ -185,6 +185,7 @@ void Border_Сonditions_Dirichlet(queue<vector<double>>& answer, const material&
                     }
                 }
             }
+
         }
         else {
             Dirichlet_in_next_step(answer.back(), data, special_multiplier, Border_condition);

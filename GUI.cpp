@@ -6,9 +6,14 @@
 #include "animation.h"
 #include "menu.h"
 
+GUI::GUI(std::queue<std::vector<double>>& data)
+{
+    this->data = data;
+}
+
 void GUI::run()
 {
-    sf::RenderWindow window (sf::VideoMode(1920, 1080), "Temperature distribution");
+    sf::RenderWindow window (sf::VideoMode(1000, 1000), "Temperature distribution");
     window.setFramerateLimit(30);
     sf::Image icon;
     if (!icon.loadFromFile("../Additional/icon.png"))
@@ -26,7 +31,7 @@ void GUI::next_window(int choice, sf::RenderWindow& window)
     switch (choice)
     {
         case 1:
-            Animation anim(window);
+            Animation anim(window, this->data);
             anim.run();
     }
 }
