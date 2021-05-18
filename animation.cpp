@@ -12,7 +12,7 @@ Animation::Animation(sf::RenderWindow& win, std::queue<std::vector<double>> data
     if (!font.loadFromFile("../Additional/Opel Sans Bold.ttf"))
         throw std::exception();
     height_of_rect = 20;
-    width_of_rect = 20;
+    width_of_rect = 40;
     int x = window.getSize().x / width_of_rect;
     int y = window.getSize().y / height_of_rect;
     web.reserve(window.getSize().x / width_of_rect * window.getSize().y / height_of_rect);

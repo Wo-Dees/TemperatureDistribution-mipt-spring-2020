@@ -4,6 +4,9 @@
 
 #include "menu.h"
 #include <string>
+#include <fstream>
+#include <sstream>
+#include <iostream>
 
 Menu::Menu(sf::RenderWindow& win) : Window(win)
 {
@@ -19,7 +22,7 @@ int Menu::run()
     backgr.setTexture(background);
     sf::Text title = create_text(250, 70, "Temperature distribution", 100, sf::Color::White);
     sf::Text text1 = create_text(325, 330, "Start", 80, sf::Color::White);
-    sf::Text text2 = create_text(325, 530, "About", 80, sf::Color::White);
+    sf::Text text2 = create_text(325, 530, "Load from file", 80, sf::Color::White);
     sf::Text text3 = create_text(345, 730, "Exit", 80, sf::Color::White);
     sf::RectangleShape button1 = create_button(290, 310, 300, 80, sf::Color::White);
     sf::RectangleShape button2 = create_button(290, 510, 300, 80, sf::Color::White);
@@ -115,4 +118,43 @@ void Menu::draw_objects()
     window.draw(backgr);
     for (auto& txt : texts)
         window.draw(txt);
+}
+
+std::vector<double> Menu::str_to_vec(std::string s)
+{
+    std::string::size_type sz;
+    std::vector<std::string> vec;
+    std::vector<double> ans;
+    std::string word;
+    std::stringstream str(s);
+    while (str >> word)
+    {
+        double a = stod(word, &sz);
+        ans.push_back(a);
+    }
+    return ans;
+}
+
+std::queue<std::vector<double >> Menu::load_from_file(std::string file_name)
+{
+    std::queue<std::vector<double >> answer;
+    std::string buff;
+    std::ifstream in("../data.txt");
+    std::vector<double> part;
+    if (in.is_open()) {
+        for (int i = 0; i < 50000; i++)
+        {
+            getline(in, buff);
+            std::vector<double> vec = str_to_vec(buff);
+            for(auto i: vec)
+                part.push_back(i);
+            if (part.size() == 2500)
+            {
+                answer.push(part);
+                part.clear();
+            }
+        }
+    }
+    in.close();
+    return answer;
 }

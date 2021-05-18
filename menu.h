@@ -8,6 +8,9 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include "Window.h"
+#include <queue>
+#include <vector>
+
 
 class Menu : public Window{
 private:
@@ -23,6 +26,7 @@ public:
     void process_events() override;
     void button_animation();
     void draw_objects() override;
+    std::queue<std::vector<double>> load_from_file(std::string file_name);
 };
 
 

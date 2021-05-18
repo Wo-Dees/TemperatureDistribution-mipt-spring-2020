@@ -11,11 +11,9 @@
 #include <vector>
 
 class GUI {
-private:
-    std::queue<std::vector<double>> data;
 
 public:
-    GUI(std::queue<std::vector<double>>& data);
+    GUI(){};
     ~GUI() = default;
 
     // mainloop

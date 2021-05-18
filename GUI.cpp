@@ -6,10 +6,8 @@
 #include "animation.h"
 #include "menu.h"
 
-GUI::GUI(std::queue<std::vector<double>>& data)
-{
-    this->data = data;
-}
+GUI::GUI()
+{}
 
 void GUI::run()
 {
@@ -23,15 +21,16 @@ void GUI::run()
     window.setIcon(500, 500, icon.getPixelsPtr());
     Menu menu(window);
     int choice = menu.run();
-    next_window(choice, window);
+    std::queue<std::vector<double>> dat = menu.get_data();
+    next_window(choice, window, dat);
 }
 
-void GUI::next_window(int choice, sf::RenderWindow& window)
+void GUI::next_window(int choice, sf::RenderWindow& window, std::queue<std::vector<double>>& dat)
 {
     switch (choice)
     {
         case 1:
-            Animation anim(window, this->data);
+            Animation anim(window, dat);
             anim.run();
     }
 }
