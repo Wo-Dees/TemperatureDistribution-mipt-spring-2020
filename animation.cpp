@@ -11,17 +11,18 @@ Animation::Animation(sf::RenderWindow& win, std::queue<std::vector<double>> data
     this->data = data;
     if (!font.loadFromFile("../Additional/Opel Sans Bold.ttf"))
         throw std::exception();
-    size_of_rect = 20;
-    int x = window.getSize().x / size_of_rect;
-    int y = window.getSize().y / size_of_rect;
-    web.reserve(window.getSize().x / size_of_rect * window.getSize().y / size_of_rect);
+    height_of_rect = 20;
+    width_of_rect = 20;
+    int x = window.getSize().x / width_of_rect;
+    int y = window.getSize().y / height_of_rect;
+    web.reserve(window.getSize().x / width_of_rect * window.getSize().y / height_of_rect);
     for (int i = 0; i < y; i++)
     {
         for (int j = 0; j < x; j++)
         {
             sf::RectangleShape rect;
-            rect.setPosition(float(size_of_rect * j), float(size_of_rect * i));
-            rect.setSize(sf::Vector2f(size_of_rect, size_of_rect));
+            rect.setPosition(float(width_of_rect * j), float(height_of_rect * i));
+            rect.setSize(sf::Vector2f(width_of_rect, height_of_rect));
             web.push_back(rect);
         }
     }
@@ -134,10 +135,10 @@ void Animation::process_events()
 int Animation::get_number_of_current_element()
 {
     sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
-    int y = (mouse_pos.y + 1) / size_of_rect;
-    int x = mouse_pos.x / size_of_rect;
+    int y = (mouse_pos.y + 1) / height_of_rect;
+    int x = mouse_pos.x / width_of_rect;
     std::vector<int> vec;
-    return window.getSize().x / size_of_rect * y + x;
+    return window.getSize().x / width_of_rect * y + x;
 }
 
 void Animation::heat_near_elements(unsigned int x)
@@ -146,16 +147,16 @@ void Animation::heat_near_elements(unsigned int x)
     vec.push_back(x);
     vec.push_back(x + 1);
     vec.push_back(x + 2);
-    vec.push_back(x + window.getSize().x / size_of_rect);
-    vec.push_back(x + window.getSize().x / size_of_rect + 1);
-    vec.push_back(x + window.getSize().x / size_of_rect - 1);
-    vec.push_back(x + 2 * window.getSize().x / size_of_rect);
+    vec.push_back(x + window.getSize().x / width_of_rect);
+    vec.push_back(x + window.getSize().x / width_of_rect + 1);
+    vec.push_back(x + window.getSize().x / width_of_rect - 1);
+    vec.push_back(x + 2 * window.getSize().x / width_of_rect);
     vec.push_back(x - 1);
     vec.push_back(x - 2);
-    vec.push_back(x - window.getSize().x / size_of_rect + 1);
-    vec.push_back(x - window.getSize().x / size_of_rect - 1);
-    vec.push_back(x - window.getSize().x / size_of_rect);
-    vec.push_back(x - 2 * window.getSize().x / size_of_rect);
+    vec.push_back(x - window.getSize().x / width_of_rect + 1);
+    vec.push_back(x - window.getSize().x / width_of_rect - 1);
+    vec.push_back(x - window.getSize().x / width_of_rect);
+    vec.push_back(x - 2 * window.getSize().x / width_of_rect);
     for (int i = 0; i < vec.size(); i++)
     {
         if (vec[i] >= 0 && vec[i] < temperature.size() && temperature[vec[i]] < temperature[vec[0]])

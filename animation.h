@@ -15,7 +15,8 @@ private:
     std::vector<sf::RectangleShape> web;
     std::vector<double> temperature;
     std::vector<std::vector<double>> temp_mas;
-    int size_of_rect;
+    int height_of_rect;
+    int width_of_rect;
     std::queue<std::vector<double>> data;
 
 public:
