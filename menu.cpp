@@ -159,3 +159,8 @@ std::queue<std::vector<double >> Menu::load_from_file(std::string file_name)
     in.close();
     return answer;
 }
+
+std::queue<std::vector<double>> Menu::get_data()
+{
+    return data;
+}
