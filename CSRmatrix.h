@@ -48,6 +48,7 @@ public:
     unsigned int height();
     unsigned int width();
 
+    //различные варинаты умножения
     CSRMatrix operator*(double k) const;
     friend CSRMatrix operator*(double k, const CSRMatrix& matrix);
     vector<double> operator*(const vector<double>& vector) const;

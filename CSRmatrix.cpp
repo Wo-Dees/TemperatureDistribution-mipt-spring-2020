@@ -30,7 +30,6 @@ CSRMatrix::CSRMatrix() {
     this->eps = 1/100000.0;
 }
 
-
 void generate_zeros(ostream& os, unsigned int am)
 {
     for (int i = 0; i < am; i++)
@@ -81,17 +80,17 @@ CSRMatrix CSRMatrix::operator+(const CSRMatrix &first_matrix) const{
         tmp_value.resize(this->Width);
         for(unsigned j = this->row_index[i]; j < this->row_index[i + 1]; ++j){
             if(using_cols[this->col[j]] != i){
-                using_cols[this->col[j]] = i;          //ставим метку, что в текущей строке столбец cols[j] учтен
-                tmp_cols.emplace_back(this->col[j]);   //во временный масив столбцов записываем номер столбца
+                using_cols[this->col[j]] = i;
+                tmp_cols.emplace_back(this->col[j]);
             }
-            tmp_value[this->col[j]] = this->value[j];  //записать значения строки из массива А в суммирующую строку(плотное представление строки)
+            tmp_value[this->col[j]] = this->value[j];
         }
         for(unsigned j = first_matrix.row_index[i]; j < first_matrix.row_index[i + 1]; ++j){
             if(using_cols[first_matrix.col[j]] != i){
                 using_cols[first_matrix.col[j]] = i;
                 tmp_cols.emplace_back(first_matrix.col[j]);
             }
-            tmp_value[first_matrix.col[j]] += first_matrix.value[j]; //прибавление значений из строки массива B к суммирующей строке
+            tmp_value[first_matrix.col[j]] += first_matrix.value[j];
         }
         for(const auto& j: tmp_cols){
             if(std::abs(tmp_value[j]) > this->eps ){
