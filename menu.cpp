@@ -15,6 +15,7 @@ Menu::Menu(sf::RenderWindow& win) : Window(win)
 
 int Menu::run()
 {
+    data = load_from_file("../data.txt");
     choice = 0;
     sf::Texture background;
     if (!background.loadFromFile("../Additional/temp_dist.jpeg"))
