@@ -90,7 +90,7 @@ void Animation::set_temperature()
         int color1 = 0;
         int color2 = 0;
         int color3 = 0;
-        int color = int(temperature.at(i) * 5);
+        int color = int(temperature.at(i) / 2);
         if (color < 100)
             color1 = color;
         else
