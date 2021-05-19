@@ -26,8 +26,8 @@ int main()
 //            out << std::endl;
 //        }
         std::queue<vector<double>> data;
-        Border_Сonditions_Dirichlet(data, titanium, 0, 500, 100, 20);
-        GUI gui;
+        Border_Conditions_Dirichlet(data, titanium, 0, 500, 100, 20);
+        GUI gui(data);
         gui.run();
         std::cout << data.size();
         // запись в файл

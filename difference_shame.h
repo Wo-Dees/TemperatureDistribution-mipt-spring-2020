@@ -170,7 +170,7 @@ vector<double> Dirichlet_in_next_step(const vector<double>& temperature_at_somet
 // Initial_condition - начальная температура (начальные условия) (Кельвины)
 // Side - сторона квадратной платинки (метры)
 // Observation_time - время наблюдения (секунды)
-void Border_Сonditions_Dirichlet(queue<vector<double>>& answer, const material& Material, const double& Initial_condition, const double& Border_condition, const double& Side, const double& Observation_time) {
+void Border_Conditions_Dirichlet(queue<vector<double>>& answer, const material& Material, const double& Initial_condition, const double& Border_condition, const double& Side, const double& Observation_time) {
     double special_multiplier = (Side * Side * COUNT_STEP_TIME) / (COUNT_STEP_LEN * COUNT_STEP_LEN * Observation_time * data_of_material.find(Material)->second); // специальный множетель - он мне будет нужен
     for (unsigned int step_time = 0; step_time < COUNT_STEP_TIME; step_time++) {
         vector<double> data;
@@ -295,7 +295,7 @@ vector<double> Neumann_in_next_step(const vector<double>& temperature_at_sometim
 // Initial_condition - начальная температура (начальные условия) (Кельвины)
 // Side - сторона квадратной платинки (метры)
 // Observation_time - время енаблюдения (секунды)
-void Border_Сonditions_Neumann(queue<vector<double>>& answer, const material& Material, const double& Initial_condition, const double& Border_condition, const double& Side, const double& Observation_time) {
+void Border_Conditions_Neumann(queue<vector<double>>& answer, const material& Material, const double& Initial_condition, const double& Border_condition, const double& Side, const double& Observation_time) {
     double special_multiplier = (Side * Side * COUNT_STEP_TIME) / (COUNT_STEP_LEN * COUNT_STEP_LEN * Observation_time * data_of_material.find(Material)->second); // специальный множетель - он мне будет нужен
     for (unsigned int step_time = 0; step_time < COUNT_STEP_TIME; step_time++) {
         vector<double> data;
@@ -415,7 +415,7 @@ vector<double> Robin_in_next_step(const vector<double>& temperature_at_sometime_
 // Initial_condition - начальная температура (начальные условия) (Кельвины)
 // Side - сторона квадратной платинки (метры)
 // Observation_time - время енаблюдения (секунды)
-void Border_Сonditions_Robin(queue<vector<double>>& answer, const material& Material, const double& Initial_condition, const double& Border_condition, const double& Side, const double& Observation_time) {
+void Border_Conditions_Robin(queue<vector<double>>& answer, const material& Material, const double& Initial_condition, const double& Border_condition, const double& Side, const double& Observation_time) {
     double special_multiplier = (Side * Side * COUNT_STEP_TIME) / (COUNT_STEP_LEN * COUNT_STEP_LEN * Observation_time * data_of_material.find(Material)->second); // специальный множетель - он мне будет нужен
     for (unsigned int step_time = 0; step_time < COUNT_STEP_TIME; step_time++) {
         vector<double> data;
