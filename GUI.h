@@ -13,7 +13,7 @@
 class GUI {
 
 public:
-    GUI(){};
+    GUI();
     ~GUI() = default;
 
     // mainloop
