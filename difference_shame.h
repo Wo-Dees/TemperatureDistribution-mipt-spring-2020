@@ -41,13 +41,6 @@ const unsigned int COUNT_STEP_LEN_X = 30; // будет 50 узлов сетки
 const unsigned int COUNT_STEP_LEN_Y = 30; // будет 50 узлов сетки по y длине
 const unsigned int COUNT_STEP_TIME = 50; // будет 1000 узлов сетки по времени
 
-//------------------------------------------------------------------------------------------------------------------------------------
-
-// Material - какой материал (то есть по сути коэффицен теплопроводности) (Вват / (м * Kельвин))
-// Border_condition - граничная температура (граничные условия) (Кельвины)
-// Initial_condition - начальная температура (начальные условия) (Кельвины)
-// Side - сторона квадратной платинки (метры)
-// Observation_time - время наблюдения (секунды)
 
 void next_step(vector<double>& answer,  const vector<double>& before, const material& Material, const double& side_x, const double& side_y, const double& observation_time, const double& f, const double& p, const double& q)  {
     vector<double> value;
@@ -168,9 +161,11 @@ void next_step(vector<double>& answer,  const vector<double>& before, const mate
     answer = GaussZeidel(CSRMatrix(value, col, row_index, COUNT_STEP_LEN_X * COUNT_STEP_LEN_Y, COUNT_STEP_LEN_X * COUNT_STEP_LEN_Y), b);
 }
 
-// Обобщённые гранинчые условия, c помощью них можно перейти к чему угодно (хоть к Нейману, хоть к Дирихле, крч что хочешь, то и делай)
-
-// f(x, y, t) = T(x, y, t) * p(x, y, t) + (dT/dt)(x, y, t) * q(x, y, t)
+// Material - какой материал (то есть по сути коэффицен теплопроводности) (Вват / (м * Kельвин))
+// Border_condition - скорость измениения темпеартуры на границе (граничные условия) (Кельвины / с)
+// Initial_condition - начальная температура (начальные условия) (Кельвины)
+// Side - сторона квадратной платинки (метры)
+// Observation_time - время енаблюдения (секунды)
 
 void solver_mesh(queue<vector<double>>& answer, const material& Material, const double& side_x, const double& side_y, const double& observation_time, const double& f, const double& p, const double& q, const double& t) {
     for (unsigned int step_time = 0; step_time < COUNT_STEP_TIME; ++step_time) {
@@ -181,14 +176,6 @@ void solver_mesh(queue<vector<double>>& answer, const material& Material, const 
         else {
             vector<double> data;
             next_step(data, answer.back(), Material, side_x, side_y, observation_time, f, p, q);
-            std::cout << std::setprecision(3);
-            for (unsigned int step_y = 0; step_y < COUNT_STEP_LEN_Y; step_y++) {
-                for (unsigned int step_x = 0; step_x < COUNT_STEP_LEN_X; step_x++) {
-                    std::cout << data[COUNT_STEP_LEN_X * step_y + step_x] << " ";
-                }
-                std::cout << std::endl;
-            }
-            std::cout << std::endl;
             answer.push(std::move(data));
         }
     }
