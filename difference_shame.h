@@ -34,260 +34,128 @@ const map <material, double> data_of_material = {{aluminum, 209.3}, {iron, 74.4}
                                            {lead, 35.0}, {mercury, 29.1}, {titanium, 18.0}};
 
 // Уровень дискретизация
-const unsigned int COUNT_STEP_LEN = 50; // будет 50 узлов сетки по длине
-const unsigned int COUNT_STEP_TIME = 1000; // будет 1000 узлов сетки по времени
+const unsigned int COUNT_STEP_LEN_X = 30; // будет 50 узлов сетки по x длине
+const unsigned int COUNT_STEP_LEN_Y = 30; // будет 50 узлов сетки по y длине
+const unsigned int COUNT_STEP_TIME = 50; // будет 1000 узлов сетки по времени
 
-//------------------------------------------------------------------------------------------------------------------------------------
 
-// первая реализация разностной схемы с граничными уловиями Дирихле на векторе
-// тут лучше всего возвращать по референсу, но пока не судьба, солвер должен под это подстроиться
-// temperature_at_sometime - распределение температур на предыдущем шаге
-// Special_multiplier - оно мне просто нужно
-// Border_condition - темпеартура на границе
-vector<double> temperature_in_next_step(const vector<double>& temperature_at_sometime_0, vector<double>& temperature_at_sometime_1, const double& Special_multiplier, const double& Border_condition) {
-    vector<double> value;
-    vector<unsigned int> col;
-    vector<unsigned int> row_index;
-    vector<double> b;
-    // переделать входящий вектор в CSR-ку и полуить столбец свободных членов
-    for (unsigned int step_x = 0; step_x < COUNT_STEP_LEN; step_x++) {
-        for (unsigned int step_y = 0; step_y < COUNT_STEP_LEN; step_y++) {
-            if (step_x == 0 && step_y == 0) {
-                row_index.push_back(0);
-                value.push_back(1);
-                col.push_back(COUNT_STEP_LEN * step_x + step_y);
-                row_index.push_back(1);
-                b.push_back(Border_condition);
-            }
-            else if (step_x == 0 || step_y == 0 || step_x == COUNT_STEP_LEN - 1 || step_y == COUNT_STEP_LEN - 1) {
-                value.push_back(1);
-                col.push_back(COUNT_STEP_LEN * step_x + step_y);
-                row_index.push_back(1 + row_index[COUNT_STEP_LEN * step_x + step_y]);
-                b.push_back(Border_condition);
-            }
-            else {
-                // выглядит очень по-дурацки, но это мне позволяет не запутаться
-                // загрузка значений
-                value.push_back(1);
-                value.push_back(1);
-                value.push_back( - (4 + Special_multiplier));
-                value.push_back(1);
-                value.push_back(1);
-                // загрузка столбцов;
-                col.push_back(COUNT_STEP_LEN * step_x + step_y + 1);
-                col.push_back(COUNT_STEP_LEN * step_x + step_y - 1);
-                col.push_back(COUNT_STEP_LEN * step_x + step_y);
-                col.push_back(COUNT_STEP_LEN * (step_x - 1) + step_y);
-                col.push_back(COUNT_STEP_LEN * (step_x + 1) + step_y);
-                // загрузка количтсва добавленных элементов
-                row_index.push_back(5 + row_index[COUNT_STEP_LEN * step_x + step_y]);
-                // загрузка свободного члена
-                b.push_back(- temperature_at_sometime_0[step_y * COUNT_STEP_LEN + step_x] * Special_multiplier);
-            }
-        }
-    }
-    temperature_at_sometime_1 = GaussZeidel(CSRMatrix(value, col, row_index, COUNT_STEP_LEN * COUNT_STEP_LEN, COUNT_STEP_LEN * COUNT_STEP_LEN), b);
-    return temperature_at_sometime_1;
-}
-
-// Material - какой материал (то есть по сути коэффицен теплопроводности) (Вват / (м * Kельвин))
-// Border_condition - граничная температура (граничные условия) (Кельвины)
-// Initial_condition - начальная температура (начальные условия) (Кельвины)
-// Side - сторона квадратной платинки (пусть пока что платинка просто будет квадратная, чтобы не было проблем с отрисовкой и масштабированием)
-vector<vector<double>>& difference_scheme(vector<vector<double>>& answer, const material& Material, const double& Initial_condition, const double& Border_condition, const double& Side, const double& Observation_time) {
-    double special_multiplier = (Side * Side * COUNT_STEP_TIME) / (COUNT_STEP_LEN * COUNT_STEP_LEN * Observation_time * data_of_material.find(Material)->second); // специальный множетель - он мне будет нужен
-    for (unsigned int step_time = 0; step_time < COUNT_STEP_TIME; step_time++) {
-        if (step_time == 0) {
-            for (unsigned int step_y = 0; step_y < COUNT_STEP_LEN; step_y++) {
-                for (unsigned int step_x = 0; step_x < COUNT_STEP_LEN; step_x++) {
-                    if ((step_x == 0) || (step_y == 0) || (step_x == COUNT_STEP_LEN - 1) || (step_y == COUNT_STEP_LEN - 1)) {
-                        answer[step_time].push_back(Border_condition);
-                    }
-                    else {
-                        answer[step_time].push_back(Initial_condition);
-                    }
-                }
-            }
-        }
-        else {
-            temperature_in_next_step(answer[step_time - 1], answer[step_time], special_multiplier, Border_condition);
-        }
-    }
-    return answer; // возвращаю вектор из векторов, которые представляют из себя плотные матрицы размером COUNT_STEP_LEN * COUNT_STEP_LEN
-}
-
-//------------------------------------------------------------------------------------------------------------------------------------
-
-// Реализация граничных условий Дирихлде на очереди
-vector<double> Dirichlet_in_next_step(const vector<double>& temperature_at_sometime_0, vector<double>& temperature_at_sometime_1, const double& Special_multiplier, const double& Border_condition) {
-    vector<double> value;
-    vector<unsigned int> col;
-    vector<unsigned int> row_index;
-    vector<double> b;
-    // переделать входящий вектор в CSR-ку и полуить столбец свободных членов
-    for (unsigned int step_x = 0; step_x < COUNT_STEP_LEN; step_x++) {
-        for (unsigned int step_y = 0; step_y < COUNT_STEP_LEN; step_y++) {
-            if (step_x == 0 && step_y == 0) {
-                row_index.push_back(0);
-                value.push_back(1);
-                col.push_back(COUNT_STEP_LEN * step_x + step_y);
-                row_index.push_back(1);
-                b.push_back(Border_condition);
-            }
-            else if (step_x == 0 || step_y == 0 || step_x == COUNT_STEP_LEN - 1 || step_y == COUNT_STEP_LEN - 1) {
-                value.push_back(1);
-                col.push_back(COUNT_STEP_LEN * step_x + step_y);
-                row_index.push_back(1 + row_index[COUNT_STEP_LEN * step_x + step_y]);
-                b.push_back(Border_condition);
-            }
-            else {
-                // выглядит очень по-дурацки, но это мне позволяет не запутаться
-                // загрузка значений
-                value.push_back(1);
-                value.push_back(1);
-                value.push_back( - (4 + Special_multiplier));
-                value.push_back(1);
-                value.push_back(1);
-                // загрузка столбцов;
-                col.push_back(COUNT_STEP_LEN * step_x + step_y + 1);
-                col.push_back(COUNT_STEP_LEN * step_x + step_y - 1);
-                col.push_back(COUNT_STEP_LEN * step_x + step_y);
-                col.push_back(COUNT_STEP_LEN * (step_x - 1) + step_y);
-                col.push_back(COUNT_STEP_LEN * (step_x + 1) + step_y);
-                // загрузка количтсва добавленных элементов
-                row_index.push_back(5 + row_index[COUNT_STEP_LEN * step_x + step_y]);
-                // загрузка свободного члена
-                b.push_back(- temperature_at_sometime_0[step_y * COUNT_STEP_LEN + step_x] * Special_multiplier);
-            }
-        }
-    }
-    temperature_at_sometime_1 = GaussZeidel(CSRMatrix(value, col, row_index, COUNT_STEP_LEN * COUNT_STEP_LEN, COUNT_STEP_LEN * COUNT_STEP_LEN), b);
-    return temperature_at_sometime_1;
-}
-
-// Material - какой материал (то есть по сути коэффицен теплопроводности) (Вват / (м * Kельвин))
-// Border_condition - граничная температура (граничные условия) (Кельвины)
-// Initial_condition - начальная температура (начальные условия) (Кельвины)
-// Side - сторона квадратной платинки (метры)
-// Observation_time - время наблюдения (секунды)
-void Border_Conditions_Dirichlet(queue<vector<double>>& answer, const material& Material, const double& Initial_condition, const double& Border_condition, const double& Side, const double& Observation_time) {
-    double special_multiplier = (Side * Side * COUNT_STEP_TIME) / (COUNT_STEP_LEN * COUNT_STEP_LEN * Observation_time * data_of_material.find(Material)->second); // специальный множетель - он мне будет нужен
-    for (unsigned int step_time = 0; step_time < COUNT_STEP_TIME; step_time++) {
-        vector<double> data;
-        if (step_time == 0) {
-            for (unsigned int step_y = 0; step_y < COUNT_STEP_LEN; step_y++) {
-                for (unsigned int step_x = 0; step_x < COUNT_STEP_LEN; step_x++) {
-                    if ((step_x == 0) || (step_y == 0) || (step_x == COUNT_STEP_LEN - 1) || (step_y == COUNT_STEP_LEN - 1)) {
-                        data.push_back(Border_condition);
-                    }
-                    else {
-                        data.push_back(Initial_condition);
-                    }
-                }
-            }
-
-        }
-        else {
-            Dirichlet_in_next_step(answer.back(), data, special_multiplier, Border_condition);
-        }
-        answer.push(std::move(data));
-    }
-}
-
-//------------------------------------------------------------------------------------------------------------------------------------
-
-// Реализация граничных условий Неймана на очереди
-vector<double> Neumann_in_next_step(const vector<double>& temperature_at_sometime_0, vector<double>& temperature_at_sometime_1, const double& Special_multiplier, const double& Border_condition, const double& Side) {
+void next_step(vector<double>& answer,  const vector<double>& before, const material& Material, const double& side_x, const double& side_y, const double& observation_time, const double& f, const double& p, const double& q)  {
     vector<double> value;
     vector<unsigned int> col;
     vector<unsigned int> row_index;
     vector<double> b;
     row_index.push_back(0);
-    // переделать входящий вектор в CSR-ку и полуить столбец свободных членов
-    for (unsigned int step_x = 0; step_x < COUNT_STEP_LEN; ++step_x) {
-        for (unsigned int step_y = 0; step_y < COUNT_STEP_LEN; ++step_y) {
-            if ((step_x == 0 && step_y == 0) || (step_x == 0 && step_y == COUNT_STEP_LEN - 1) || (step_x == COUNT_STEP_LEN - 1 && step_y == 0) || (step_x == COUNT_STEP_LEN - 1 && step_y == COUNT_STEP_LEN - 1)) {
-                b.push_back( - Special_multiplier * temperature_at_sometime_0[step_y * COUNT_STEP_LEN + step_x] - 4 * Side * Border_condition / COUNT_STEP_LEN);
-                value.push_back(2);
-                value.push_back(2);
-                value.push_back( - (4 + Special_multiplier));
-                if (step_x == 0 && step_y == 0) {
-                    col.push_back(COUNT_STEP_LEN * (step_x + 1) + step_y);
-                    col.push_back(COUNT_STEP_LEN * step_x + step_y + 1);
-                    row_index.push_back(3 + row_index[COUNT_STEP_LEN * step_x + step_y]);
-                }
-                else if (step_x == 0 && step_y == COUNT_STEP_LEN - 1) {
-                    col.push_back(COUNT_STEP_LEN * (step_x + 1) + step_y);
-                    col.push_back(COUNT_STEP_LEN * step_x + step_y - 1);
-                    row_index.push_back(3 + row_index[COUNT_STEP_LEN * step_x + step_y]);
-                }
-                else if (step_x == COUNT_STEP_LEN - 1 && step_y == 0) {
-                    col.push_back(COUNT_STEP_LEN * (step_x - 1) + step_y);
-                    col.push_back(COUNT_STEP_LEN * step_x + step_y + 1);
-                    row_index.push_back(3 + row_index[COUNT_STEP_LEN * step_x + step_y]);
-                }
-                else {
-                    col.push_back(COUNT_STEP_LEN * (step_x - 1) + step_y);
-                    col.push_back(COUNT_STEP_LEN * step_x + step_y - 1);
-                    row_index.push_back(3 + row_index[COUNT_STEP_LEN * step_x + step_y]);
-                }
-                col.push_back(COUNT_STEP_LEN * step_x + step_y);
+    double D_x = (data_of_material.find(Material)->second * COUNT_STEP_LEN_X * COUNT_STEP_LEN_X) / (side_x * side_x);
+    double D_y = (data_of_material.find(Material)->second * COUNT_STEP_LEN_Y * COUNT_STEP_LEN_Y) / (side_y * side_y);
+    double D_m = - 2 * D_x - 2 * D_y - COUNT_STEP_TIME / observation_time;
+    for (unsigned int step_x = 0; step_x < COUNT_STEP_LEN_X; ++step_x) {
+        for (int unsigned step_y = 0; step_y < COUNT_STEP_LEN_Y; ++step_y) {
+            if ((step_x == 0 && step_y == 0) || (step_x == 0 && step_y == COUNT_STEP_LEN_Y - 1) || (step_x == COUNT_STEP_LEN_X - 1 && step_y == COUNT_STEP_LEN_Y - 1) || (step_x == COUNT_STEP_LEN_X - 1 && step_y == 0)) {
+                value.push_back(1);
+                col.push_back(step_x * COUNT_STEP_LEN_Y + step_y);
+                b.push_back(f / p);
+                row_index.push_back(row_index[step_x * COUNT_STEP_LEN_Y + step_y] + 1);
             }
-            else if (step_x == 0 || step_y == 0 || step_x == COUNT_STEP_LEN - 1 || step_y == COUNT_STEP_LEN - 1) {
-                b.push_back( - Special_multiplier * temperature_at_sometime_0[step_y * COUNT_STEP_LEN + step_x] - 2 * Side * Border_condition / COUNT_STEP_LEN);
-                value.push_back(1);
-                value.push_back(1);
-                value.push_back(2);
-                value.push_back( - (4 + Special_multiplier));
+            else if (step_x == 0 || step_y == 0 || step_x == COUNT_STEP_LEN_X - 1 || step_y == COUNT_STEP_LEN_Y - 1) {
                 if (step_x == 0) {
-                    col.push_back(COUNT_STEP_LEN * step_x + step_y + 1);
-                    col.push_back(COUNT_STEP_LEN * step_x + step_y - 1);
-                    col.push_back(COUNT_STEP_LEN * (step_x + 1) + step_y);
-                    col.push_back(COUNT_STEP_LEN * step_x + step_y);
+                    if (q != 0) {
+                        b.push_back( - before[step_x * COUNT_STEP_LEN_Y + step_y] * COUNT_STEP_TIME / observation_time - f / q);
+                        value.push_back(D_x);
+                        value.push_back(D_x);
+                        value.push_back(D_y + COUNT_STEP_TIME / observation_time);
+                        value.push_back(D_m);
+                        col.push_back(step_x * COUNT_STEP_LEN_Y + step_y - 1);
+                        col.push_back(step_x * COUNT_STEP_LEN_Y + step_y + 1);
+                        col.push_back((step_x + 1) * COUNT_STEP_LEN_Y + step_y);
+                        col.push_back(step_x * COUNT_STEP_LEN_Y + step_y);
+                        row_index.push_back(row_index[step_x * COUNT_STEP_LEN_Y + step_y] + 4);
+                    }
+                    else {
+                        value.push_back(1);
+                        col.push_back(step_x * COUNT_STEP_LEN_Y + step_y);
+                        b.push_back(f / p);
+                        row_index.push_back(row_index[step_x * COUNT_STEP_LEN_Y + step_y] + 1);
+                    }
                 }
                 else if (step_y == 0) {
-                    col.push_back(COUNT_STEP_LEN * (step_x - 1) + step_y);
-                    col.push_back(COUNT_STEP_LEN * (step_x + 1) + step_y);
-                    col.push_back(COUNT_STEP_LEN * step_x + step_y + 1);
-                    col.push_back(COUNT_STEP_LEN * step_x + step_y);
+                    if (q != 0) {
+                        value.push_back(D_y);
+                        value.push_back(D_y);
+                        value.push_back(D_x + COUNT_STEP_TIME / observation_time);
+                        value.push_back(D_m);
+                        col.push_back((step_x - 1) * COUNT_STEP_LEN_Y + step_y);
+                        col.push_back((step_x + 1) * COUNT_STEP_LEN_Y + step_y);
+                        col.push_back(step_x * COUNT_STEP_LEN_Y + step_y + 1);
+                        col.push_back(step_x * COUNT_STEP_LEN_Y + step_y);
+                        b.push_back( - before[step_x * COUNT_STEP_LEN_Y + step_y] * COUNT_STEP_TIME / observation_time - f / q);
+                        row_index.push_back(row_index[step_x * COUNT_STEP_LEN_Y + step_y] + 4);
+                    }
+                    else {
+                        value.push_back(1);
+                        col.push_back(step_x * COUNT_STEP_LEN_Y + step_y);
+                        b.push_back(f / p);
+                        row_index.push_back(row_index[step_x * COUNT_STEP_LEN_Y + step_y] + 1);
+                    }
                 }
-                else if (step_x == COUNT_STEP_LEN - 1) {
-                    col.push_back(COUNT_STEP_LEN * step_x + step_y + 1);
-                    col.push_back(COUNT_STEP_LEN * step_x + step_y - 1);
-                    col.push_back(COUNT_STEP_LEN * (step_x - 1) + step_y);
-                    col.push_back(COUNT_STEP_LEN * step_x + step_y);
+                else if (step_x == COUNT_STEP_LEN_X - 1) {
+                    if (q != 0) {
+                        value.push_back(D_x);
+                        value.push_back(D_x);
+                        value.push_back(D_x + COUNT_STEP_TIME / observation_time);
+                        value.push_back(D_m);
+                        col.push_back(step_x * COUNT_STEP_LEN_Y + step_y - 1);
+                        col.push_back(step_x * COUNT_STEP_LEN_Y + step_y + 1);
+                        col.push_back((step_x - 1) * COUNT_STEP_LEN_Y + step_y);
+                        col.push_back(step_x * COUNT_STEP_LEN_Y + step_y);
+                        b.push_back( - before[step_x * COUNT_STEP_LEN_Y + step_y] * COUNT_STEP_TIME / observation_time - f / q);
+                        row_index.push_back(row_index[step_x * COUNT_STEP_LEN_Y + step_y] + 4);
+                    }
+                    else {
+                        value.push_back(1);
+                        col.push_back(step_x * COUNT_STEP_LEN_Y + step_y);
+                        b.push_back(f / p);
+                        row_index.push_back(row_index[step_x * COUNT_STEP_LEN_Y + step_y] + 1);
+                    }
+
                 }
                 else {
-                    col.push_back(COUNT_STEP_LEN * (step_x - 1) + step_y);
-                    col.push_back(COUNT_STEP_LEN * (step_x + 1) + step_y);
-                    col.push_back(COUNT_STEP_LEN * step_x + step_y - 1);
-                    col.push_back(COUNT_STEP_LEN * step_x + step_y);
+                    if (q != 0) {
+                        value.push_back(D_y);
+                        value.push_back(D_y);
+                        value.push_back(D_x + COUNT_STEP_TIME / observation_time);
+                        value.push_back(D_m);
+                        col.push_back((step_x - 1) * COUNT_STEP_LEN_Y + step_y);
+                        col.push_back((step_x + 1) * COUNT_STEP_LEN_Y + step_y);
+                        col.push_back(step_x * COUNT_STEP_LEN_Y + step_y - 1);
+                        col.push_back(step_x * COUNT_STEP_LEN_Y + step_y);
+                        b.push_back( - before[step_x * COUNT_STEP_LEN_Y + step_y] * COUNT_STEP_TIME / observation_time - f / q);
+                        row_index.push_back(row_index[step_x * COUNT_STEP_LEN_Y + step_y] + 4);
+                    }
+                    else {
+                        value.push_back(1);
+                        col.push_back(step_x * COUNT_STEP_LEN_Y + step_y);
+                        b.push_back(f / p);
+                        row_index.push_back(row_index[step_x * COUNT_STEP_LEN_Y + step_y] + 1);
+                    }
                 }
-                row_index.push_back(4 + row_index[COUNT_STEP_LEN * step_x + step_y]);
             }
             else {
-                // выглядит очень по-дурацки, но это мне позволяет не запутаться
-                // загрузка значений
-                value.push_back(1);
-                value.push_back(1);
-                value.push_back( - (4 + Special_multiplier));
-                value.push_back(1);
-                value.push_back(1);
-                // загрузка столбцов;
-                col.push_back(COUNT_STEP_LEN * step_x + step_y + 1);
-                col.push_back(COUNT_STEP_LEN * step_x + step_y - 1);
-                col.push_back(COUNT_STEP_LEN * step_x + step_y);
-                col.push_back(COUNT_STEP_LEN * (step_x - 1) + step_y);
-                col.push_back(COUNT_STEP_LEN * (step_x + 1) + step_y);
-                // загрузка количтсва добавленных элементов
-                row_index.push_back(5 + row_index[COUNT_STEP_LEN * step_x + step_y]);
-                // загрузка свободного члена
-                b.push_back( - temperature_at_sometime_0[step_y * COUNT_STEP_LEN + step_x] * Special_multiplier);
-            }
+                value.push_back(D_x);
+                value.push_back(D_x);
+                value.push_back(D_y);
+                value.push_back(D_y);
+                value.push_back(D_m);
+                col.push_back(step_x * COUNT_STEP_LEN_Y + step_y - 1);
+                col.push_back(step_x * COUNT_STEP_LEN_Y + step_y + 1);
+                col.push_back((step_x - 1) * COUNT_STEP_LEN_Y + step_y);
+                col.push_back((step_x + 1) * COUNT_STEP_LEN_Y + step_y);
+                col.push_back(step_x * COUNT_STEP_LEN_Y + step_y);
+                b.push_back( - before[step_x * COUNT_STEP_LEN_Y + step_y] * COUNT_STEP_TIME / observation_time);
+                row_index.push_back(row_index[step_x * COUNT_STEP_LEN_Y + step_y] + 5);
+            };
         }
     }
-    temperature_at_sometime_1 = GaussZeidel(CSRMatrix(value, col, row_index, COUNT_STEP_LEN * COUNT_STEP_LEN, COUNT_STEP_LEN * COUNT_STEP_LEN), b);
-    return temperature_at_sometime_1;
+    answer = GaussZeidel(CSRMatrix(value, col, row_index, COUNT_STEP_LEN_X * COUNT_STEP_LEN_Y, COUNT_STEP_LEN_X * COUNT_STEP_LEN_Y), b);
 }
 
 // Material - какой материал (то есть по сути коэффицен теплопроводности) (Вват / (м * Kельвин))
@@ -295,141 +163,18 @@ vector<double> Neumann_in_next_step(const vector<double>& temperature_at_sometim
 // Initial_condition - начальная температура (начальные условия) (Кельвины)
 // Side - сторона квадратной платинки (метры)
 // Observation_time - время енаблюдения (секунды)
-void Border_Conditions_Neumann(queue<vector<double>>& answer, const material& Material, const double& Initial_condition, const double& Border_condition, const double& Side, const double& Observation_time) {
-    double special_multiplier = (Side * Side * COUNT_STEP_TIME) / (COUNT_STEP_LEN * COUNT_STEP_LEN * Observation_time * data_of_material.find(Material)->second); // специальный множетель - он мне будет нужен
-    for (unsigned int step_time = 0; step_time < COUNT_STEP_TIME; step_time++) {
-        vector<double> data;
+
+void solver_mesh(queue<vector<double>>& answer, const material& Material, const double& side_x, const double& side_y, const double& observation_time, const double& f, const double& p, const double& q, const double& t) {
+    for (unsigned int step_time = 0; step_time < COUNT_STEP_TIME; ++step_time) {
         if (step_time == 0) {
-            for (unsigned int step_y = 0; step_y < COUNT_STEP_LEN; step_y++) {
-                for (unsigned int step_x = 0; step_x < COUNT_STEP_LEN; step_x++) {
-                    data.push_back(Initial_condition);
-                }
-            }
+            vector<double> data(COUNT_STEP_LEN_X * COUNT_STEP_LEN_Y, t);
+            answer.push(std::move(data));
         }
         else {
-            Neumann_in_next_step(answer.back(), data, special_multiplier, Border_condition, Side);
+            vector<double> data;
+            next_step(data, answer.back(), Material, side_x, side_y, observation_time, f, p, q);
+            answer.push(std::move(data));
         }
-        answer.push(std::move(data));
-    }
-}
-
-//------------------------------------------------------------------------------------------------------------------------------------
-
-// Реализация граничных условий Робена на очереди
-vector<double> Robin_in_next_step(const vector<double>& temperature_at_sometime_0, vector<double>& temperature_at_sometime_1, const double& Special_multiplier, const double& Border_condition, const double& Side) {
-    vector<double> value;
-    vector<unsigned int> col;
-    vector<unsigned int> row_index;
-    vector<double> b;
-    row_index.push_back(0);
-    // переделать входящий вектор в CSR-ку и полуить столбец свободных членов
-    for (unsigned int step_x = 0; step_x < COUNT_STEP_LEN; ++step_x) {
-        for (unsigned int step_y = 0; step_y < COUNT_STEP_LEN; ++step_y) {
-            if ((step_x == 0 && step_y == 0) || (step_x == 0 && step_y == COUNT_STEP_LEN - 1) || (step_x == COUNT_STEP_LEN - 1 && step_y == 0) || (step_x == COUNT_STEP_LEN - 1 && step_y == COUNT_STEP_LEN - 1)) {
-                b.push_back( - Special_multiplier * temperature_at_sometime_0[step_y * COUNT_STEP_LEN + step_x] - 2 * Side * Border_condition / (COUNT_STEP_LEN * 1));
-                value.push_back(2);
-                value.push_back(2);
-                value.push_back( - (4 + Special_multiplier + 2 * Side /COUNT_STEP_LEN));
-                if (step_x == 0 && step_y == 0) {
-                    col.push_back(COUNT_STEP_LEN * (step_x + 1) + step_y);
-                    col.push_back(COUNT_STEP_LEN * step_x + step_y + 1);
-                    row_index.push_back(3 + row_index[COUNT_STEP_LEN * step_x + step_y]);
-                }
-                else if (step_x == 0 && step_y == COUNT_STEP_LEN - 1) {
-                    col.push_back(COUNT_STEP_LEN * (step_x + 1) + step_y);
-                    col.push_back(COUNT_STEP_LEN * step_x + step_y - 1);
-                    row_index.push_back(3 + row_index[COUNT_STEP_LEN * step_x + step_y]);
-                }
-                else if (step_x == COUNT_STEP_LEN - 1 && step_y == 0) {
-                    col.push_back(COUNT_STEP_LEN * (step_x - 1) + step_y);
-                    col.push_back(COUNT_STEP_LEN * step_x + step_y + 1);
-                    row_index.push_back(3 + row_index[COUNT_STEP_LEN * step_x + step_y]);
-                }
-                else {
-                    col.push_back(COUNT_STEP_LEN * (step_x - 1) + step_y);
-                    col.push_back(COUNT_STEP_LEN * step_x + step_y - 1);
-                    row_index.push_back(3 + row_index[COUNT_STEP_LEN * step_x + step_y]);
-                }
-                col.push_back(COUNT_STEP_LEN * step_x + step_y);
-            }
-            else if (step_x == 0 || step_y == 0 || step_x == COUNT_STEP_LEN - 1 || step_y == COUNT_STEP_LEN - 1) {
-                b.push_back( - Special_multiplier * temperature_at_sometime_0[step_y * COUNT_STEP_LEN + step_x] - 2 * Side * Border_condition / COUNT_STEP_LEN);
-                value.push_back(1);
-                value.push_back(1);
-                value.push_back(2);
-                value.push_back( - (4 + Special_multiplier + 2 * Side / (COUNT_STEP_LEN * 1)));
-                if (step_x == 0) {
-                    col.push_back(COUNT_STEP_LEN * step_x + step_y + 1);
-                    col.push_back(COUNT_STEP_LEN * step_x + step_y - 1);
-                    col.push_back(COUNT_STEP_LEN * (step_x + 1) + step_y);
-                    col.push_back(COUNT_STEP_LEN * step_x + step_y);
-                }
-                else if (step_y == 0) {
-                    col.push_back(COUNT_STEP_LEN * (step_x - 1) + step_y);
-                    col.push_back(COUNT_STEP_LEN * (step_x + 1) + step_y);
-                    col.push_back(COUNT_STEP_LEN * step_x + step_y + 1);
-                    col.push_back(COUNT_STEP_LEN * step_x + step_y);
-                }
-                else if (step_x == COUNT_STEP_LEN - 1) {
-                    col.push_back(COUNT_STEP_LEN * step_x + step_y + 1);
-                    col.push_back(COUNT_STEP_LEN * step_x + step_y - 1);
-                    col.push_back(COUNT_STEP_LEN * (step_x - 1) + step_y);
-                    col.push_back(COUNT_STEP_LEN * step_x + step_y);
-                }
-                else {
-                    col.push_back(COUNT_STEP_LEN * (step_x - 1) + step_y);
-                    col.push_back(COUNT_STEP_LEN * (step_x + 1) + step_y);
-                    col.push_back(COUNT_STEP_LEN * step_x + step_y - 1);
-                    col.push_back(COUNT_STEP_LEN * step_x + step_y);
-                }
-                row_index.push_back(4 + row_index[COUNT_STEP_LEN * step_x + step_y]);
-            }
-            else {
-                // выглядит очень по-дурацки, но это мне позволяет не запутаться
-                // загрузка значений
-                value.push_back(1);
-                value.push_back(1);
-                value.push_back( - (4 + Special_multiplier));
-                value.push_back(1);
-                value.push_back(1);
-                // загрузка столбцов;
-                col.push_back(COUNT_STEP_LEN * step_x + step_y + 1);
-                col.push_back(COUNT_STEP_LEN * step_x + step_y - 1);
-                col.push_back(COUNT_STEP_LEN * step_x + step_y);
-                col.push_back(COUNT_STEP_LEN * (step_x - 1) + step_y);
-                col.push_back(COUNT_STEP_LEN * (step_x + 1) + step_y);
-                // загрузка количтсва добавленных элементов
-                row_index.push_back(5 + row_index[COUNT_STEP_LEN * step_x + step_y]);
-                // загрузка свободного члена
-                b.push_back( - temperature_at_sometime_0[step_y * COUNT_STEP_LEN + step_x] * Special_multiplier);
-            }
-        }
-    }
-    temperature_at_sometime_1 = GaussZeidel(CSRMatrix(value, col, row_index, COUNT_STEP_LEN * COUNT_STEP_LEN, COUNT_STEP_LEN * COUNT_STEP_LEN), b);
-    return temperature_at_sometime_1;
-}
-
-// Material - какой материал (то есть по сути коэффицен теплопроводности) (Вват / (м * Kельвин))
-// Border_condition_1 - граничная температура (граничные условия) (Кельвины)
-// Border_condition_2 - скорость измениения темпеартуры на границе (Кельвины / с)
-// Initial_condition - начальная температура (начальные условия) (Кельвины)
-// Side - сторона квадратной платинки (метры)
-// Observation_time - время енаблюдения (секунды)
-void Border_Conditions_Robin(queue<vector<double>>& answer, const material& Material, const double& Initial_condition, const double& Border_condition, const double& Side, const double& Observation_time) {
-    double special_multiplier = (Side * Side * COUNT_STEP_TIME) / (COUNT_STEP_LEN * COUNT_STEP_LEN * Observation_time * data_of_material.find(Material)->second); // специальный множетель - он мне будет нужен
-    for (unsigned int step_time = 0; step_time < COUNT_STEP_TIME; step_time++) {
-        vector<double> data;
-        if (step_time == 0) {
-            for (unsigned int step_y = 0; step_y < COUNT_STEP_LEN; step_y++) {
-                for (unsigned int step_x = 0; step_x < COUNT_STEP_LEN; step_x++) {
-                    data.push_back(Initial_condition);
-                }
-            }
-        }
-        else {
-            Robin_in_next_step(answer.back(), data, special_multiplier, Border_condition, Side);
-        }
-        answer.push(std::move(data));
     }
 }
 
