@@ -11,7 +11,7 @@ GUI::GUI()
 
 void GUI::run()
 {
-    sf::RenderWindow window (sf::VideoMode(1000, 1000), "Temperature distribution");
+    sf::RenderWindow window (sf::VideoMode(2000, 1000), "Temperature distribution");
     window.setFramerateLimit(30);
     sf::Image icon;
     if (!icon.loadFromFile("../Additional/icon.png"))
