@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="Temperature_distribution"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\..\;CMake Files\..\..\..\..\..\usr\;CMake Files\..\..\..\..\..\usr\local\;CMake Files\..\..\..\..\..\usr\local\lib\;CMake Files\..\..\..\..\..\usr\local\lib\cmake\;CMake Files\..\..\..\..\..\usr\local\lib\cmake\SFML\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Temperature_distribution">
+				<Option output="/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/cmake-build-debug/Temperature_distribution" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/bin/../include/c++/v1"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/12.0.0/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/cmake-build-debug/Makefile&quot;  VERBOSE=1 Temperature_distribution"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Temperature_distribution/fast">
+				<Option output="/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/cmake-build-debug/Temperature_distribution" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/bin/../include/c++/v1"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/12.0.0/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/cmake-build-debug/Makefile&quot;  VERBOSE=1 Temperature_distribution/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/CSRmatrix.cpp">
+			<Option target="Temperature_distribution"/>
+		</Unit>
+		<Unit filename="/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/CSRmatrix.h">
+			<Option target="Temperature_distribution"/>
+		</Unit>
+		<Unit filename="/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/GUI.cpp">
+			<Option target="Temperature_distribution"/>
+		</Unit>
+		<Unit filename="/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/GUI.h">
+			<Option target="Temperature_distribution"/>
+		</Unit>
+		<Unit filename="/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/Solvers.h">
+			<Option target="Temperature_distribution"/>
+		</Unit>
+		<Unit filename="/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/Vector.h">
+			<Option target="Temperature_distribution"/>
+		</Unit>
+		<Unit filename="/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/Window.cpp">
+			<Option target="Temperature_distribution"/>
+		</Unit>
+		<Unit filename="/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/Window.h">
+			<Option target="Temperature_distribution"/>
+		</Unit>
+		<Unit filename="/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/animation.cpp">
+			<Option target="Temperature_distribution"/>
+		</Unit>
+		<Unit filename="/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/animation.h">
+			<Option target="Temperature_distribution"/>
+		</Unit>
+		<Unit filename="/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/main.cpp">
+			<Option target="Temperature_distribution"/>
+		</Unit>
+		<Unit filename="/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/menu.cpp">
+			<Option target="Temperature_distribution"/>
+		</Unit>
+		<Unit filename="/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/menu.h">
+			<Option target="Temperature_distribution"/>
+		</Unit>
+		<Unit filename="/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/special_number.cpp">
+			<Option target="Temperature_distribution"/>
+		</Unit>
+		<Unit filename="/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/special_number.h">
+			<Option target="Temperature_distribution"/>
+		</Unit>
+		<Unit filename="/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/../../../../../usr/local/lib/cmake/SFML/SFMLConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\usr\local\lib\cmake\SFML\"/>
+		</Unit>
+		<Unit filename="/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/../../../../../usr/local/lib/cmake/SFML/SFMLConfigDependencies.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\usr\local\lib\cmake\SFML\"/>
+		</Unit>
+		<Unit filename="/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/../../../../../usr/local/lib/cmake/SFML/SFMLConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\usr\local\lib\cmake\SFML\"/>
+		</Unit>
+		<Unit filename="/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/../../../../../usr/local/lib/cmake/SFML/SFMLSharedTargets-release.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\usr\local\lib\cmake\SFML\"/>
+		</Unit>
+		<Unit filename="/Users/leonidpereverzin/Desktop/Repositories/Temperature_distribution/../../../../../usr/local/lib/cmake/SFML/SFMLSharedTargets.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\usr\local\lib\cmake\SFML\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

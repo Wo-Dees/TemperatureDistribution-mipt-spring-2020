@@ -34,8 +34,8 @@ const map <material, double> data_of_material = {{aluminum, 209.3}, {iron, 74.4}
                                            {lead, 35.0}, {mercury, 29.1}, {titanium, 18.0}};
 
 // Уровень дискретизация
-const unsigned int COUNT_STEP_LEN_X = 50; // будет 50 узлов сетки по x длине
-const unsigned int COUNT_STEP_LEN_Y = 50; // будет 50 узлов сетки по y длине
+const unsigned int COUNT_STEP_LEN_X = 30; // будет 50 узлов сетки по x длине
+const unsigned int COUNT_STEP_LEN_Y = 30; // будет 50 узлов сетки по y длине
 const unsigned int COUNT_STEP_TIME = 50; // будет 1000 узлов сетки по времени
 
 //------------------------------------------------------------------------------------------------------------------------------------
@@ -73,7 +73,7 @@ void next_step(vector<double>& answer,  const vector<double>& before, const mate
                         value.push_back(D_m);
                         col.push_back(step_x * COUNT_STEP_LEN_Y + step_y - 1);
                         col.push_back(step_x * COUNT_STEP_LEN_Y + step_y + 1);
-                        col.push_back(step_x * (COUNT_STEP_LEN_Y + 1) + step_y);
+                        col.push_back((step_x + 1) * COUNT_STEP_LEN_Y + step_y);
                         col.push_back(step_x * COUNT_STEP_LEN_Y + step_y);
                         row_index.push_back(row_index[step_x * COUNT_STEP_LEN_Y + step_y] + 4);
                     }
@@ -90,8 +90,8 @@ void next_step(vector<double>& answer,  const vector<double>& before, const mate
                         value.push_back(D_y);
                         value.push_back(D_x + COUNT_STEP_TIME / observation_time);
                         value.push_back(D_m);
-                        col.push_back(step_x * (COUNT_STEP_LEN_Y - 1) + step_y);
-                        col.push_back(step_x * (COUNT_STEP_LEN_Y + 1) + step_y);
+                        col.push_back((step_x - 1) * COUNT_STEP_LEN_Y + step_y);
+                        col.push_back((step_x + 1) * COUNT_STEP_LEN_Y + step_y);
                         col.push_back(step_x * COUNT_STEP_LEN_Y + step_y + 1);
                         col.push_back(step_x * COUNT_STEP_LEN_Y + step_y);
                         b.push_back( - before[step_x * COUNT_STEP_LEN_Y + step_y] * COUNT_STEP_TIME / observation_time - f / q);
@@ -112,7 +112,7 @@ void next_step(vector<double>& answer,  const vector<double>& before, const mate
                         value.push_back(D_m);
                         col.push_back(step_x * COUNT_STEP_LEN_Y + step_y - 1);
                         col.push_back(step_x * COUNT_STEP_LEN_Y + step_y + 1);
-                        col.push_back(step_x * (COUNT_STEP_LEN_Y - 1) + step_y);
+                        col.push_back((step_x - 1) * COUNT_STEP_LEN_Y + step_y);
                         col.push_back(step_x * COUNT_STEP_LEN_Y + step_y);
                         b.push_back( - before[step_x * COUNT_STEP_LEN_Y + step_y] * COUNT_STEP_TIME / observation_time - f / q);
                         row_index.push_back(row_index[step_x * COUNT_STEP_LEN_Y + step_y] + 4);
@@ -131,8 +131,8 @@ void next_step(vector<double>& answer,  const vector<double>& before, const mate
                         value.push_back(D_y);
                         value.push_back(D_x + COUNT_STEP_TIME / observation_time);
                         value.push_back(D_m);
-                        col.push_back(step_x * (COUNT_STEP_LEN_Y - 1) + step_y);
-                        col.push_back(step_x * (COUNT_STEP_LEN_Y + 1) + step_y);
+                        col.push_back((step_x - 1) * COUNT_STEP_LEN_Y + step_y);
+                        col.push_back((step_x + 1) * COUNT_STEP_LEN_Y + step_y);
                         col.push_back(step_x * COUNT_STEP_LEN_Y + step_y - 1);
                         col.push_back(step_x * COUNT_STEP_LEN_Y + step_y);
                         b.push_back( - before[step_x * COUNT_STEP_LEN_Y + step_y] * COUNT_STEP_TIME / observation_time - f / q);
@@ -178,6 +178,14 @@ void solver_mesh(queue<vector<double>>& answer, const material& Material, const 
         else {
             vector<double> data;
             next_step(data, answer.back(), Material, side_x, side_y, observation_time, f, p, q);
+            std::cout << std::setprecision(3);
+            for (unsigned int step_y = 0; step_y < COUNT_STEP_LEN_Y; step_y++) {
+                for (unsigned int step_x = 0; step_x < COUNT_STEP_LEN_X; step_x++) {
+                    std::cout << data[COUNT_STEP_LEN_X * step_y + step_x] << " ";
+                }
+                std::cout << std::endl;
+            }
+            std::cout << std::endl;
             answer.push(std::move(data));
         }
     }
