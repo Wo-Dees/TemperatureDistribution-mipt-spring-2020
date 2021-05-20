@@ -7,9 +7,12 @@
 
 #include <map>
 #include <queue>
+#include <vector>
+#include "CSRmatrix.h"
 
 using std::map;
 using std::queue;
+using std::vector;
 
 // возможные материалы
 enum material {

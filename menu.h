@@ -17,6 +17,7 @@ private:
     int choice;
     sf::Sprite backgr;
     std::queue<std::vector<double>> data;
+    std::string filename;
 
 public:
     Menu(sf::RenderWindow& win);
@@ -24,12 +25,15 @@ public:
 
     // main method
     int run() override;
+    void start_step();
+    void load_file_step();
+    void init_conditions_step();
     void process_events() override;
     void button_animation();
     void draw_objects() override;
-    std::queue<std::vector<double>> load_from_file(std::string file_name);
     std::vector<double> str_to_vec(std::string s);
     std::queue<std::vector<double >> get_data();
+    const std::string &getFilename() const;
 };
 
 

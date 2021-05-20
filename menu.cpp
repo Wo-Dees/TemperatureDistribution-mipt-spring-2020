@@ -4,25 +4,33 @@
 
 #include "menu.h"
 #include <string>
-#include <fstream>
-#include <sstream>
 #include <iostream>
 
 Menu::Menu(sf::RenderWindow& win) : Window(win)
 {
     choice = 0;
+    filename = "";
 }
 
 int Menu::run()
 {
-    data = load_from_file("../data.txt");
     choice = 0;
     sf::Texture background;
-    if (!background.loadFromFile("../Additional/temp_dist.jpeg"))
-        throw std::exception();
+    if (!background.loadFromFile("../Additional/background1.png"))
+        throw std::runtime_error("menu.cpp");
     backgr.setTexture(background);
+    start_step();
+    if (choice == 1)
+        init_conditions_step();
+    if (choice == 2)
+        load_file_step();
+    return choice;
+}
+
+void Menu::start_step()
+{
     sf::Text title = create_text(250, 70, "Temperature distribution", 100, sf::Color::White);
-    sf::Text text1 = create_text(325, 330, "Start", 80, sf::Color::White);
+    sf::Text text1 = create_text(325, 330, "Set initial conditions", 80, sf::Color::White);
     sf::Text text2 = create_text(325, 530, "Load from file", 80, sf::Color::White);
     sf::Text text3 = create_text(345, 730, "Exit", 80, sf::Color::White);
     sf::RectangleShape button1 = create_button(290, 310, 300, 80, sf::Color::White);
@@ -40,32 +48,69 @@ int Menu::run()
         }
         process_events();
         window.clear(sf::Color::White);
-        window.draw(backgr);
         draw_objects();
         window.display();
         if (choice != 0)
             break;
     }
-    return choice;
+}
+
+// load from file
+void Menu::load_file_step()
+{
+    choice = 2;
+    texts.clear();
+    buttons.clear();
+    sf::Text title = create_text(250, 70, "Temperature distribution", 100, sf::Color::White);
+    sf::Text text2 = create_text(325, 530, "Filename:", 80, sf::Color::White);
+    sf::Text text3 = create_text(345, 730, "Exit", 80, sf::Color::White);
+    sf::RectangleShape button2 = create_button(290, 510, 300, 80, sf::Color::White);
+    sf::RectangleShape button3 = create_button(290, 710, 300, 80, sf::Color::White);
+    button_animation();
+    while (window.isOpen())
+    {
+        sf::Event event;
+
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
+        }
+        if (choice == -1)
+            window.close();
+        process_events();
+        window.clear(sf::Color::White);
+        window.draw(backgr);
+        draw_objects();
+        window.display();
+        if (choice == 1)
+        {
+            choice = 2;
+            break;
+        }
+    }
+}
+
+void Menu::init_conditions_step()
+{
+    choice = 1;
 }
 
 void Menu::process_events()
 {
     sf::Vector2i m_pos = sf::Mouse::getPosition(window);
-    int i = 0;
     for (int j = 0; j < buttons.size(); j++)
     {
-        i++;
         sf::Vector2f b_pos = buttons[j].getPosition();
         sf::Vector2f b_size = buttons[j].getSize();
         sf::IntRect rect(b_pos.x, b_pos.y, b_size.x, b_size.y);
         if (rect.contains(m_pos))
         {
             texts[j + 1].setFillColor(sf::Color::Yellow);
-            texts[j + 1].setCharacterSize(90);
+            texts[j + 1].setCharacterSize(85);
             if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
-                choice = i;
+                choice = j + 1;
             }
         }
         else
@@ -78,7 +123,7 @@ void Menu::process_events()
 
 void Menu::button_animation()
 {
-    for (int i = 0; i < texts.size(); i++)
+    for (int i = 1; i < texts.size(); i++)
     {
         sf::Vector2f pos = texts[i].getPosition();
         texts[i].setPosition(-500, pos.y);
@@ -121,46 +166,12 @@ void Menu::draw_objects()
         window.draw(txt);
 }
 
-std::vector<double> Menu::str_to_vec(std::string s)
-{
-    std::string::size_type sz;
-    std::vector<std::string> vec;
-    std::vector<double> ans;
-    std::string word;
-    std::stringstream str(s);
-    while (str >> word)
-    {
-        double a = stod(word, &sz);
-        ans.push_back(a);
-    }
-    return ans;
-}
-
-std::queue<std::vector<double >> Menu::load_from_file(std::string file_name)
-{
-    std::queue<std::vector<double >> answer;
-    std::string buff;
-    std::ifstream in("../data.txt");
-    std::vector<double> part;
-    if (in.is_open()) {
-        for (int i = 0; i < 50000; i++)
-        {
-            getline(in, buff);
-            std::vector<double> vec = str_to_vec(buff);
-            for(auto i: vec)
-                part.push_back(i);
-            if (part.size() == 2500)
-            {
-                answer.push(part);
-                part.clear();
-            }
-        }
-    }
-    in.close();
-    return answer;
-}
-
 std::queue<std::vector<double>> Menu::get_data()
 {
     return data;
 }
+
+const std::string &Menu::getFilename() const {
+    return filename;
+}
+

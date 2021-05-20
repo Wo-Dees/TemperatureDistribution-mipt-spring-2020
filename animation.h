@@ -20,21 +20,33 @@ private:
     std::queue<std::vector<double>> data;
 
 public:
-    Animation(sf::RenderWindow& win, std::queue<std::vector<double>> data);
+    Animation(sf::RenderWindow& win);
     ~Animation() = default;
 
     // main method
-    int run() override;
+    int run(std::queue<std::vector<double>>& data);
+
+    int run() override {return 0;}
+
+    void init_conditions();
 
     void draw_objects() override;
 
     void set_temperature();
 
-    void process_events();
+    void process_events() override;
 
     int get_number_of_current_element();
 
     void heat_near_elements(unsigned int x);
+
+    const std::queue<std::vector<double>>& getData() const;
+
+    std::queue<std::vector<double>> load_from_file(std::string file_name);
+
+    std::vector<double> str_to_vec(std::string s);
+
+    void loading();
 };
 
 

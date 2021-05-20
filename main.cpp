@@ -3,14 +3,11 @@
 #include "Solvers.h"
 #include <iostream>
 #include <fstream>
-#include "difference_shame.h"
 #include <queue>
 
 int main()
 {
     try{
-        std::queue<vector<double>> data;
-        solver_mesh(data, aluminum, 100, 100, 1, 500, 1, 0, 100);
         GUI gui;
         gui.run();
     } catch (std::runtime_error& er) {
