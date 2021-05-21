@@ -39,7 +39,7 @@ const map <material, double> data_of_material = {{aluminum, 209.3}, {iron, 74.4}
 // Уровень дискретизация
 const unsigned int COUNT_STEP_LEN_X = 40; // будет 50 узлов сетки по x длине
 const unsigned int COUNT_STEP_LEN_Y = 40; // будет 50 узлов сетки по y длине
-const unsigned int COUNT_STEP_TIME = 50; // будет 1000 узлов сетки по времени
+const unsigned int COUNT_STEP_TIME = 2000; // будет 1000 узлов сетки по времени
 
 
 void next_step(vector<double>& answer,  const vector<double>& before, const material& Material, const double& side_x, const double& side_y, const double& observation_time, const double& f, const double& p, const double& q)  {
@@ -179,14 +179,14 @@ void solver_mesh(queue<vector<double>>& answer, const material& Material, const 
                     vector<double> data;
                     for (unsigned int step_x = 0; step_x < COUNT_STEP_LEN_X; ++step_x) {
                         for (int unsigned step_y = 0; step_y < COUNT_STEP_LEN_Y; ++step_y) {
-                            data.push_back((step_x * step_x + step_y * step_y) / (COUNT_STEP_LEN_Y * COUNT_STEP_LEN_Y + COUNT_STEP_LEN_X * COUNT_STEP_LEN_X) * t);
+                            data.push_back((step_x * step_x + step_y * step_y) * t / (COUNT_STEP_LEN_Y * COUNT_STEP_LEN_Y + COUNT_STEP_LEN_X * COUNT_STEP_LEN_X));
                         }
                     }
                     answer.push(std::move(data));
                 }
             }
             else {
-                answer.push(std::move(temperatute));
+//                answer.push(std::move(temperatute));
             }
         }
         else {
