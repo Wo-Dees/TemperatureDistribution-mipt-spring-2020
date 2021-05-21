@@ -40,7 +40,7 @@ void GUI::next_window(int choice, sf::RenderWindow& window)
             //std::queue<std::vector<double>> init_conditions = anim.getData();
             // вызов функции Лени которая вернет очередь и векторов
             std::queue<std::vector<double>> data;
-            solver_mesh(data, aluminum, 100, 100, 12, 500, 1, 0, 100);
+            solver_mesh(data, aluminum, 1, 1, 300, 500, 1, 0, 100);
             anim.run(data);
         }
         case 2:
