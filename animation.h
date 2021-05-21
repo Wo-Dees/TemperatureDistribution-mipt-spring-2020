@@ -32,6 +32,8 @@ public:
 
     void draw_objects() override;
 
+    void draw_web();
+
     void set_temperature();
 
     void process_events() override;

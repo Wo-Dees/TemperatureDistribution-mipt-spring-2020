@@ -6,7 +6,7 @@
 
 Window::Window(sf::RenderWindow& win) : window(win)
 {
-    if (!font.loadFromFile("../Additional/Vampire95 Regular.ttf"))
+    if (!font.loadFromFile("../Additional/Arial.ttf"))
         throw std::exception();
 }
 
@@ -18,6 +18,7 @@ sf::Text& Window::create_text(float x, float y, std::string inf, int size, sf::C
     text.setCharacterSize(size);
     text.setFillColor(color);
     text.setPosition(x, y - float(size) / 2);
+    text.setStyle(sf::Text::Bold);
     texts.push_back(text);
     return *texts.rbegin();
 }

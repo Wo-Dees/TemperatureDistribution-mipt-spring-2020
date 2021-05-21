@@ -4,7 +4,7 @@
 
 #include "TextBar.h"
 
-ShapeOfBbox::ShapeOfBbox(int x , int y, int length, int width) {
+ShapeOfbox::ShapeOfbox(int x , int y, int length, int width) {
     this->x = x;
     this->y = y;
     this->length = length;
@@ -19,7 +19,7 @@ ShapeOfBbox::ShapeOfBbox(int x , int y, int length, int width) {
     this->mouse_y_max = this->left_corner_y + this->width;
 }
 
-bool ShapeOfBbox::is_in(int x_, int y_) const
+bool ShapeOfbox::is_in(int x_, int y_) const
 {
     if (x_ <= this->mouse_x_max && x_ >= this->mouse_x_min && y_ <= this->mouse_y_max && y_ >= this->mouse_y_min)
         return true;

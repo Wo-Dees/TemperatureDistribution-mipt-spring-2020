@@ -48,6 +48,14 @@ public:
     void display_button(sf::RenderWindow& Window) const;
 
     void event_holder(sf::Event& event);
+
+    void set_position(int new_x, int new_y);
+
+    sf::Vector2i get_position();
+
+    void move(int dx, int dy);
+
+    bool is_active();
 };
 
 

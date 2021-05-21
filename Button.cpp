@@ -11,8 +11,6 @@ ShapeOfBbox::ShapeOfBbox(int x, int y, int length, int width) {
     this->y = y;
     this->length = length;
     this->width = width;
-    this->center_x = int(x + (this->length) / 2);
-    this->center_y = int(y + (this->width) / 2);
 
     this->set_current_parametres();
 }
@@ -76,7 +74,8 @@ Button::Button(std::string name, int x, int y, const sf::Font &font, std::string
     this->second_color = second_color;
     this->txt.setString(text);
     this->txt.setFont(font);
-    this->txt.setCharacterSize(35);
+    this->txt.setCharacterSize(75);
+    this->txt.setStyle(sf::Text::Bold);
 
     auto l = this->txt.getGlobalBounds().height;
     auto f = this->txt.getGlobalBounds().width;
@@ -117,6 +116,14 @@ void Button::cursor_in() {
     this->box.setColor(sf::Color(240, 240, 240));
 }
 
+void Button::set_position(int new_x, int new_y)
+{
+    this->Shape.x = new_x;
+    this->Shape.y = new_y;
+    this->Shape.set_current_parametres();
+    this->txt.setPosition((float) Shape.x, (float) Shape.y);
+}
+
 void Button::cursor_out() {
     this->box.setColor(sf::Color::White);
     this->txt.setFillColor(this->first_color);
@@ -129,4 +136,21 @@ void Button::display_button(sf::RenderWindow &Window) const {
 
 void Button::change_synchronized_value() {
     this->synchronized_value = not this->synchronized_value;
+}
+
+sf::Vector2i Button::get_position() {
+    return sf::Vector2i(this->Shape.x, this->Shape.y);
+}
+
+void Button::move(int dx, int dy)
+{
+    this->Shape.x += dx;
+    this->Shape.y += dy;
+    this->Shape.set_current_parametres();
+    this->txt.setPosition((float) Shape.x, (float) Shape.y);
+}
+
+bool Button::is_active()
+{
+    return this->synchronized_value;
 }

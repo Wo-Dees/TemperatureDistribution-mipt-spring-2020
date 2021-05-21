@@ -1,7 +1,6 @@
 #include "GUI.h"
 #include "CSRmatrix.h"
 #include "Solvers.h"
-#include <iostream>
 #include <fstream>
 #include <queue>
 

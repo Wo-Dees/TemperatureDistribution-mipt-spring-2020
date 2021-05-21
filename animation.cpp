@@ -11,8 +11,8 @@ Animation::Animation(sf::RenderWindow& win) : Window(win)
 {
     if (!font.loadFromFile("../Additional/Opel Sans Bold.ttf"))
         throw std::runtime_error("animation.cpp");
-    height_of_rect = 20;
-    width_of_rect = 40;
+    height_of_rect = 50;
+    width_of_rect = 50;
     int x = window.getSize().x / width_of_rect;
     int y = window.getSize().y / height_of_rect;
     web.reserve(window.getSize().x / width_of_rect * window.getSize().y / height_of_rect);
@@ -30,12 +30,14 @@ Animation::Animation(sf::RenderWindow& win) : Window(win)
     for (int i = 0; i < x; i++)
         for (int j = 0; j < y; j++)
             temperature[x * j + i] = (10 * i);
+    set_temperature();
 }
 
 int Animation::run(std::queue<std::vector<double>>& data)
 {
     this->data = data;
     unsigned long int counter = 0;
+    loading();
     sf::Text& temp = create_text(20, window.getSize().y - 100, "Temp", 50, sf::Color::White);
     while (window.isOpen())
     {
@@ -48,7 +50,7 @@ int Animation::run(std::queue<std::vector<double>>& data)
         }
         int x = get_number_of_current_element();
         if (x >= 0 && x < temperature.size())
-            temp.setString(std::to_string(int(temperature[x])));
+            temp.setString(std::to_string(int(temperature[x])) + " C");
         window.clear();
         if (!data.empty())
         {
@@ -58,19 +60,10 @@ int Animation::run(std::queue<std::vector<double>>& data)
             }
             if (!data.empty())
                 data.pop();
-//            if (!data.empty())
-//                data.pop();
-//            if (!data.empty())
-//                data.pop();
-//            if (!data.empty())
-//                data.pop();
         }
-        //process_events();
-        set_temperature();
         draw_objects();
         window.display();
         counter++;
-//        sleep(1);
     }
     return 0;
 }
@@ -99,10 +92,15 @@ void Animation::init_conditions()
     }
 }
 
-void Animation::draw_objects()
+void Animation::draw_web()
 {
     for (auto& rect : web)
         window.draw(rect);
+}
+
+void Animation::draw_objects()
+{
+    draw_web();
     for (auto& txt : texts)
         window.draw(txt);
 }
@@ -198,9 +196,6 @@ const std::queue<std::vector<double>>& Animation::getData() const {
 
 void Animation::loading()
 {
-    int x = window.getSize().x / width_of_rect;
-    int y = window.getSize().y / height_of_rect;
-    int i = 0;
     while (window.isOpen())
     {
         sf::Event event;
@@ -210,20 +205,11 @@ void Animation::loading()
                 window.close();
         }
 
-        for (int j = 0; j < y; j += 2)
-        {
-            if (x * j + i < temperature.size())
-                temperature[x * j + i] = 0;
-            if (x + x * (j + 1) - i < temperature.size())
-                temperature[x + x * (j + 1) - i] = 0;
-//            if (x * j + i + 1 < temperature.size())
-//                temperature[x * j + i + 1] = 0;
-//            if (x + x * (j + 1) - i - 1< temperature.size())
-//                temperature[x + x * (j + 1) - i - 1] = 0;
-        }
-        if (i == x)
+        for (int i = 0; i < temperature.size(); i++)
+            if (temperature[i] - 10 >= 0)
+                temperature[i] -= 10;
+        if (*std::max_element(temperature.begin(), temperature.end()) < 2)
             break;
-        i += 2;
         window.clear();
         process_events();
         set_temperature();

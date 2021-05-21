@@ -6,7 +6,7 @@
 #define TEXTBAR_TEXTBAR_H
 #include <SFML/Graphics.hpp>
 
-struct ShapeOfBbox
+struct ShapeOfbox
 {
     int length; int width;
     int x; int y;
@@ -14,14 +14,14 @@ struct ShapeOfBbox
     int mouse_x_min; int mouse_x_max;
     int mouse_y_min; int mouse_y_max;
 
-    ShapeOfBbox(int x = 0, int y = 0, int length = 0, int width = 0);
+    ShapeOfbox(int x = 0, int y = 0, int length = 0, int width = 0);
     bool is_in(int x_, int y_) const;
 };
 
 class TextBar {
 private:
     sf::Font font;
-    ShapeOfBbox Shape;
+    ShapeOfbox Shape;
     sf::String s;
     sf::Text txt;
     sf::Sprite box;

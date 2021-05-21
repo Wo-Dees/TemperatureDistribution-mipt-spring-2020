@@ -10,6 +10,8 @@
 #include "Window.h"
 #include <queue>
 #include <vector>
+#include "animation.h"
+#include "TextBar.h"
 
 
 class Menu : public Window{
@@ -18,9 +20,10 @@ private:
     sf::Sprite backgr;
     std::queue<std::vector<double>> data;
     std::string filename;
+    Animation anim;
 
 public:
-    Menu(sf::RenderWindow& win);
+    Menu(sf::RenderWindow& win, Animation& anim);
     ~Menu() = default;
 
     // main method
@@ -31,7 +34,6 @@ public:
     void process_events() override;
     void button_animation();
     void draw_objects() override;
-    std::vector<double> str_to_vec(std::string s);
     std::queue<std::vector<double >> get_data();
     const std::string &getFilename() const;
 };

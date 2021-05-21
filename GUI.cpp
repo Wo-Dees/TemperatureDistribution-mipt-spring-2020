@@ -14,7 +14,7 @@ GUI::GUI()
 
 void GUI::run()
 {
-    sf::RenderWindow window (sf::VideoMode(2000, 1000), "Temperature distribution");
+    sf::RenderWindow window (sf::VideoMode(1950, 1050), "Temperature distribution");
     window.setFramerateLimit(30);
     sf::Image icon;
     if (!icon.loadFromFile("../Additional/icon.png"))
@@ -22,7 +22,8 @@ void GUI::run()
         throw std::runtime_error("GUI.cpp");
     }
     window.setIcon(500, 500, icon.getPixelsPtr());
-    Menu menu(window);
+    Animation anim(window);
+    Menu menu(window, anim);
     int choice = menu.run();
     std::string filename = menu.getFilename();
     next_window(choice, window);

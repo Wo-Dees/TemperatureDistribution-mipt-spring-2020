@@ -6,6 +6,7 @@
 #define TEMPERATURE_DISTRIBUTION_WINDOW_H
 
 #include <SFML/Graphics.hpp>
+#include "Button.h"
 
 class Window {
 protected:
@@ -13,6 +14,7 @@ protected:
     std::vector<sf::Text> texts;
     std::vector<sf::RectangleShape> buttons;
     sf::RenderWindow& window;
+    std::vector<Button> Buttons;
 
 public:
     Window(sf::RenderWindow& win);
