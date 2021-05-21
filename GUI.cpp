@@ -50,6 +50,22 @@ void GUI::next_window(int choice, sf::RenderWindow& window, std::string filename
             data = anim.load_from_file("../" + filename);
             anim.run(data);
         }
+        case 3:
+        {
+            std::vector<double> init_conditions = {0};
+            // вызов функции Лени которая вернет очередь и векторов
+            std::queue<std::vector<double>> data;
+            solver_mesh(data, aluminum, 1, 1, 30, 0, 0, 1, 100, init_conditions);
+            anim.run(data);
+        }
+        case 4:
+        {
+            std::vector<double> init_conditions = {1};
+            // вызов функции Лени которая вернет очередь и векторов
+            std::queue<std::vector<double>> data;
+            solver_mesh(data, aluminum, 1, 1, 30, 0, 0, 1, 100, init_conditions);
+            anim.run(data);
+        }
 
     }
 }

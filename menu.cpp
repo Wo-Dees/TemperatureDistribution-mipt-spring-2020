@@ -16,9 +16,7 @@ int Menu::run()
 {
     choice = 0;
     start_step();
-    if (choice == 1)
-        init_conditions_step();
-    if (choice == 2)
+    if (choice == 2) // load
         load_file_step();
     return choice;
 }
@@ -26,12 +24,16 @@ int Menu::run()
 void Menu::start_step()
 {
     sf::Text title = create_text(370, 70, "Temperature distribution", 100, sf::Color::White);
-    Button button1("Set initial conditions", 960, 350, font, "Set initial conditions", sf::Color(253, 106, 2), sf::Color::Yellow, window, false);
-    Button button2("Set initial conditions", 960, 500, font, "Load from file", sf::Color(253, 106, 2), sf::Color::Yellow, window, false);
-    Button button3("Set initial conditions", 960, 650, font, "Exit", sf::Color(253, 106, 2), sf::Color::Yellow, window, false);
+    Button button1("", 960, 300, font, "Set initial conditions", sf::Color(253, 106, 2), sf::Color::Yellow, window, false);
+    Button button2("", 960, 400, font, "Load from file", sf::Color(253, 106, 2), sf::Color::Yellow, window, false);
+    Button button3("", 960, 500, font, "Static distribution", sf::Color(253, 106, 2), sf::Color::Yellow, window, false);
+    Button button4("", 960, 600, font, "Radian distribution", sf::Color(253, 106, 2), sf::Color::Yellow, window, false);
+    Button button5("", 960, 700, font, "Exit", sf::Color(253, 106, 2), sf::Color::Yellow, window, false);
     Buttons.push_back(button1);
     Buttons.push_back(button2);
     Buttons.push_back(button3);
+    Buttons.push_back(button4);
+    Buttons.push_back(button5);
     button_animation();
     while (window.isOpen())
     {
