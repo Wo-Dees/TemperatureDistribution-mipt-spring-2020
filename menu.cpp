@@ -9,7 +9,7 @@
 Menu::Menu(sf::RenderWindow& win, Animation& anim) : Window(win), anim(anim)
 {
     choice = 0;
-    filename = "";
+    filename = "qwery";
 }
 
 int Menu::run()
@@ -56,11 +56,13 @@ void Menu::start_step()
 // load from file
 void Menu::load_file_step()
 {
+    sf::Texture textbar;
+    textbar.loadFromFile("../Additional/text_field.png");
     choice = 2;
     Buttons.clear();
-    Button button1("", 960, 300, font, "Filename", sf::Color(253, 106, 2), sf::Color::Yellow, window, false);
-    Button button2("", 960, 450, font, "Exit", sf::Color(253, 106, 2), sf::Color::Yellow, window, false);
-    //TextBar filename_bar(1050, 300, );
+    Button button1("", 730, 300, font, "Filename:", sf::Color(253, 106, 2), sf::Color::Yellow, window, false);
+    Button button2("", 960, 450, font, "Start", sf::Color(253, 106, 2), sf::Color::Yellow, window, false);
+    TextBar filename_bar(1050, 300, 200, 50, textbar, font, "data.txt", 10);
     Buttons.push_back(button1);
     Buttons.push_back(button2);
     button_animation();
@@ -72,16 +74,19 @@ void Menu::load_file_step()
         {
             if (event.type == sf::Event::Closed)
                 window.close();
+            Buttons[1].event_holder(event);
+            filename_bar.event_holder(event);
         }
-        if (choice == -1)
-            window.close();
         process_events();
         window.clear(sf::Color::White);
         draw_objects();
+        filename_bar.displayBox(window);
         window.display();
-        if (choice == 1)
+        if (button2.is_active())
         {
             choice = 2;
+            filename = filename_bar.returnText();
+            std::cout << filename_bar.returnText() << std::endl;
             break;
         }
     }
@@ -94,12 +99,9 @@ void Menu::init_conditions_step()
 
 void Menu::process_events()
 {
-    if (Buttons[0].is_active())
-        choice = 1;
-    if (Buttons[1].is_active())
-        choice = 2;
-    if (Buttons[2].is_active())
-        choice = 3;
+    for (int i = 0; i < Buttons.size(); i++)
+        if (Buttons[i].is_active())
+            choice = i + 1;
 }
 
 void Menu::button_animation()
@@ -118,7 +120,7 @@ void Menu::button_animation()
                     window.close();
             }
 
-            Buttons[i].move(150, 0);
+            Buttons[i].move(180, 0);
             window.clear(sf::Color::White);
             anim.draw_web();
             for (int k = 0; k <= i; k++)

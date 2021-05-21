@@ -38,7 +38,6 @@ int Animation::run(std::queue<std::vector<double>>& data)
     this->data = data;
     std::cout << data.size() << std::endl;
     unsigned long int counter = 0;
-    loading();
     sf::Text& temp = create_text(20, window.getSize().y - 100, "Temp", 50, sf::Color::White);
     while (window.isOpen())
     {
@@ -148,16 +147,7 @@ void Animation::process_events()
         int x = get_number_of_current_element();
         if (x >= 0 && x < temperature.size())
         {
-            temperature[x] += 10;
-        }
-    }
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
-    {
-        int x = get_number_of_current_element();
-        if (x >= 0 && x < temperature.size())
-        {
-            if (temperature[x] > 0)
-                temperature[x] -= 10;
+            temperature[x] += 50;
         }
     }
 }
@@ -238,8 +228,8 @@ std::queue<std::vector<double>> Animation::load_from_file(std::string file_name)
             getline(in, buff);
             std::vector<double> vec = str_to_vec(buff);
             for(auto& j: vec)
-                part.push_back(i);
-            if (part.size() == 2500)
+                part.push_back(j);
+            if (part.size() == 1600)
             {
                 answer.push(part);
                 part.clear();

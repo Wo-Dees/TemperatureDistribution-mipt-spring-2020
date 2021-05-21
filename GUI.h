@@ -19,7 +19,7 @@ public:
     // mainloop
     void run();
 
-    void next_window(int choice, sf::RenderWindow& window);
+    void next_window(int choice, sf::RenderWindow& window, std::string filename);
 };
 
 

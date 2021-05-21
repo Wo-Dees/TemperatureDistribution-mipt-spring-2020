@@ -26,10 +26,10 @@ void GUI::run()
     Menu menu(window, anim);
     int choice = menu.run();
     std::string filename = menu.getFilename();
-    next_window(choice, window);
+    next_window(choice, window, filename);
 }
 
-void GUI::next_window(int choice, sf::RenderWindow& window)
+void GUI::next_window(int choice, sf::RenderWindow& window, std::string filename)
 {
     Animation anim(window);
     switch (choice)
@@ -41,13 +41,13 @@ void GUI::next_window(int choice, sf::RenderWindow& window)
                 std::cout << i << " ";
             // вызов функции Лени которая вернет очередь и векторов
             std::queue<std::vector<double>> data;
-            solver_mesh(data, aluminum, 1, 1, 30, 500, 1, 0, 100, init_conditions);
+            solver_mesh(data, aluminum, 1, 1, 30, 0, 0, 1, 100, init_conditions);
             anim.run(data);
         }
         case 2:
         {
             std::queue<std::vector<double>> data;
-            data = anim.load_from_file("../data.txt");
+            data = anim.load_from_file("../" + filename);
             anim.run(data);
         }
 
