@@ -9,6 +9,7 @@
 #include "Window.h"
 #include <queue>
 #include <vector>
+#include "Button.h"
 
 class Animation : public Window {
 private:
@@ -28,7 +29,7 @@ public:
 
     int run() override {return 0;}
 
-    void init_conditions();
+    std::vector<double> init_conditions();
 
     void draw_objects() override;
 

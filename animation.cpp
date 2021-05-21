@@ -36,6 +36,7 @@ Animation::Animation(sf::RenderWindow& win) : Window(win)
 int Animation::run(std::queue<std::vector<double>>& data)
 {
     this->data = data;
+    std::cout << data.size() << std::endl;
     unsigned long int counter = 0;
     loading();
     sf::Text& temp = create_text(20, window.getSize().y - 100, "Temp", 50, sf::Color::White);
@@ -69,10 +70,11 @@ int Animation::run(std::queue<std::vector<double>>& data)
     return 0;
 }
 
-void Animation::init_conditions()
+std::vector<double> Animation::init_conditions()
 {
     loading();
     sf::Text& temp = create_text(20, window.getSize().y - 100, "", 50, sf::Color::White);
+    Button start("", 960, 1000, font, "Start", sf::Color(253, 106, 2), sf::Color::Yellow, window, false);
     while (window.isOpen())
     {
         sf::Event event;
@@ -81,16 +83,21 @@ void Animation::init_conditions()
         {
             if (event.type == sf::Event::Closed)
                 window.close();
+            start.event_holder(event);
         }
         int x = get_number_of_current_element();
         if (x >= 0 && x < temperature.size())
-            temp.setString(std::to_string(int(temperature[x])));
+            temp.setString(std::to_string(int(temperature[x])) + " C");
         window.clear();
+        if (start.is_active())
+            break;
         process_events();
         set_temperature();
         draw_objects();
+        start.display_button(window);
         window.display();
     }
+    return temperature;
 }
 
 void Animation::draw_web()

@@ -36,11 +36,12 @@ void GUI::next_window(int choice, sf::RenderWindow& window)
     {
         case 1:
         {
-            //anim.init_conditions();
-            //std::queue<std::vector<double>> init_conditions = anim.getData();
+            std::vector<double> init_conditions = {1};
+            for (auto& i : init_conditions)
+                std::cout << i << " ";
             // вызов функции Лени которая вернет очередь и векторов
             std::queue<std::vector<double>> data;
-            solver_mesh(data, aluminum, 1, 1, 300, 500, 1, 0, 100);
+            solver_mesh(data, aluminum, 1, 1, 30, 500, 1, 0, 100, init_conditions);
             anim.run(data);
         }
         case 2:

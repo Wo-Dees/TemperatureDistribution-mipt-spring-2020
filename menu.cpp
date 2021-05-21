@@ -25,7 +25,7 @@ int Menu::run()
 
 void Menu::start_step()
 {
-    sf::Text title = create_text(350, 70, "Temperature distribution", 100, sf::Color::White);
+    sf::Text title = create_text(370, 70, "Temperature distribution", 100, sf::Color::White);
     Button button1("Set initial conditions", 960, 350, font, "Set initial conditions", sf::Color(253, 106, 2), sf::Color::Yellow, window, false);
     Button button2("Set initial conditions", 960, 500, font, "Load from file", sf::Color(253, 106, 2), sf::Color::Yellow, window, false);
     Button button3("Set initial conditions", 960, 650, font, "Exit", sf::Color(253, 106, 2), sf::Color::Yellow, window, false);
