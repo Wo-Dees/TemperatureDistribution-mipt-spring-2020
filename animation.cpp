@@ -11,8 +11,8 @@ Animation::Animation(sf::RenderWindow& win) : Window(win)
 {
     if (!font.loadFromFile("../Additional/Opel Sans Bold.ttf"))
         throw std::runtime_error("animation.cpp");
-    height_of_rect = 50;
-    width_of_rect = 50;
+    height_of_rect = 27;
+    width_of_rect = 48;
     int x = window.getSize().x / width_of_rect;
     int y = window.getSize().y / height_of_rect;
     web.reserve(window.getSize().x / width_of_rect * window.getSize().y / height_of_rect);
@@ -62,6 +62,7 @@ int Animation::run(std::queue<std::vector<double>>& data)
                 data.pop();
         }
         draw_objects();
+        set_temperature();
         window.display();
         counter++;
     }
