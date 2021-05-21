@@ -25,11 +25,12 @@ void GUI::run()
     Animation anim(window);
     Menu menu(window, anim);
     int choice = menu.run();
+    int method = menu.getMethod();
     std::string filename = menu.getFilename();
-    next_window(choice, window, filename);
+    next_window(choice, window, filename, method);
 }
 
-void GUI::next_window(int choice, sf::RenderWindow& window, std::string filename)
+void GUI::next_window(int choice, sf::RenderWindow& window, std::string filename, int method)
 {
     Animation anim(window);
     switch (choice)
@@ -44,12 +45,14 @@ void GUI::next_window(int choice, sf::RenderWindow& window, std::string filename
             // рабочая изотерма
             solver_mesh(data, aluminum, 100, 100, 1, 100, 1, 0, 0, init_conditions);
             anim.run(data);
+            break;
         }
         case 2:
         {
             std::queue<std::vector<double>> data;
             data = anim.load_from_file("../" + filename);
             anim.run(data);
+            break;
         }
         case 3:
         {
@@ -59,17 +62,19 @@ void GUI::next_window(int choice, sf::RenderWindow& window, std::string filename
             // рабочая изотерма (тут адиабата бессмысленна)
             solver_mesh(data, aluminum, 100, 100, 1, 500, 1, 0, 100, init_conditions);
             anim.run(data);
+            break;
         }
         case 4:
         {
             std::vector<double> init_conditions = {1};
             // вызов функции Лени которая вернет очередь и векторов
             std::queue<std::vector<double>> data;
-            // рабочая изотерма
-            //solver_mesh(data, aluminum, 100, 100, 1, 500, 1, 0, 1000, init_conditions);
-            // рабочая адиабата
-            solver_mesh(data, aluminum, 100, 100, 1, 0, 0, 1, 1000, init_conditions);
+            if (method == 1)
+                solver_mesh(data, aluminum, 100, 100, 1, 0, 0, 1, 1000, init_conditions);
+            else
+                solver_mesh(data, aluminum, 100, 100, 1, 500, 1, 0, 1000, init_conditions);
             anim.run(data);
+            break;
         }
 
     }

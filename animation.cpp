@@ -35,6 +35,7 @@ Animation::Animation(sf::RenderWindow& win) : Window(win)
 
 int Animation::run(std::queue<std::vector<double>>& data)
 {
+    texts.clear();
     this->data = data;
     std::cout << data.size() << std::endl;
     unsigned long int counter = 0;
@@ -46,7 +47,7 @@ int Animation::run(std::queue<std::vector<double>>& data)
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
-                window.close();
+                return 0;
         }
         int x = get_number_of_current_element();
         if (x >= 0 && x < temperature.size())
@@ -89,7 +90,10 @@ std::vector<double> Animation::init_conditions()
             temp.setString(std::to_string(int(temperature[x])) + " C");
         window.clear();
         if (start.is_active())
+        {
+            window.clear();
             break;
+        }
         process_events();
         set_temperature();
         draw_objects();

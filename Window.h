@@ -7,6 +7,8 @@
 
 #include <SFML/Graphics.hpp>
 #include "Button.h"
+#include "TextBar.h"
+#include "OneChoiseBar.h"
 
 class Window {
 protected:
@@ -15,6 +17,7 @@ protected:
     std::vector<sf::RectangleShape> buttons;
     sf::RenderWindow& window;
     std::vector<Button> Buttons;
+    std::vector<OneChoiseBar> Bars;
 
 public:
     Window(sf::RenderWindow& win);

@@ -4,7 +4,7 @@
 
 #include "OneChoiseBar.h"
 bool OneChoiseBar::is_anyone_active = false;
-OneChoiseBar::OneChoiseBar(int x, int y, int radius, int dr, sf::Color back_color, sf::Color main_color) {
+OneChoiseBar::OneChoiseBar(int x, int y, int dr, int radius, sf::Color back_color, sf::Color main_color) {
     this->back_color = back_color;
     this->main_color = main_color;
     this->radius = radius;

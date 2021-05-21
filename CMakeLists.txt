@@ -13,7 +13,9 @@ set(SOURCE_FILES main.cpp CSRmatrix.cpp CSRmatrix.h Solvers.h Vector.h special_n
         TextBar.h
         TextBar.cpp
         Button.h
-        Button.cpp)
+        Button.cpp
+        OneChoiseBar.cpp
+        OneChoiseBar.h)
 
 add_executable(Temperature_distribution ${SOURCE_FILES})
 include_directories(/usr/local/include)

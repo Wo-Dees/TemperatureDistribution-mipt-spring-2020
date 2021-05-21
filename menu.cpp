@@ -9,7 +9,7 @@
 Menu::Menu(sf::RenderWindow& win, Animation& anim) : Window(win), anim(anim)
 {
     choice = 0;
-    filename = "qwery";
+    filename = "";
 }
 
 int Menu::run()
@@ -52,6 +52,63 @@ void Menu::start_step()
         window.display();
         if (choice != 0)
             break;
+    }
+    if (choice == 1)
+    {
+        parameters();
+    }
+    if (choice == 3)
+    {
+        parameters();
+    }
+    if (choice == 4)
+    {
+        parameters();
+    }
+}
+
+void Menu::parameters()
+{
+    Buttons.clear();
+    texts.clear();
+    sf::Text title = create_text(370, 70, "Temperature distribution", 100, sf::Color::White);
+    Button button1("", 890, 300, font, "Adiabata", sf::Color(253, 106, 2), sf::Color::Yellow, window, false);
+    Button button2("", 890, 400, font, "Isotherm", sf::Color(253, 106, 2), sf::Color::Yellow, window, false);
+    Button button3("", 960, 800, font, "Start", sf::Color(253, 106, 2), sf::Color::Yellow, window, false);
+    OneChoiseBar adiabata(1100, 300, 15, 30, sf::Color::White, sf::Color::Black);
+    OneChoiseBar isotherm(1100, 400, 15, 30, sf::Color::White, sf::Color::Black);
+    Bars.push_back(adiabata);
+    Bars.push_back(isotherm);
+    Buttons.push_back(button1);
+    Buttons.push_back(button2);
+    Buttons.push_back(button3);
+    button_animation();
+    while (window.isOpen())
+    {
+        sf::Event event;
+
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+            {
+                choice = 100;
+                return;
+            }
+            for (auto& b : Bars)
+                b.event_holder(event);
+            Buttons[2].event_holder(event);
+        }
+        window.clear(sf::Color::White);
+        draw_objects();
+        if (button3.is_active())
+        {
+            if (adiabata.return_value())
+                method = 1;
+            else
+                method = 2;
+            break;
+        }
+        window.display();
     }
 }
 
@@ -122,7 +179,7 @@ void Menu::button_animation()
                     window.close();
             }
 
-            Buttons[i].move(180, 0);
+            Buttons[i].move(200, 0);
             window.clear(sf::Color::White);
             anim.draw_web();
             for (int k = 0; k <= i; k++)
@@ -153,6 +210,8 @@ void Menu::draw_objects()
         window.draw(txt);
     for (auto& b : Buttons)
         b.display_button(window);
+    for (auto& b : Bars)
+        b.display(window);
 
 }
 
@@ -163,5 +222,10 @@ std::queue<std::vector<double>> Menu::get_data()
 
 const std::string &Menu::getFilename() const {
     return filename;
+}
+
+int Menu::getMethod()
+{
+    return method;
 }
 

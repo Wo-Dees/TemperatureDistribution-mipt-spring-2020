@@ -99,7 +99,6 @@ void Button::event_holder(sf::Event &event) {
 
     if (event.type == sf::Event::MouseButtonPressed) {
         if (event.mouseButton.button == sf::Mouse::Left) {
-            std::cout << event.mouseButton.x << " " << event.mouseButton.y << std::endl;
             if (this->Shape.is_in(event.mouseButton.x, event.mouseButton.y)) {
                 this->cursor_in();
                 this->change_synchronized_value();

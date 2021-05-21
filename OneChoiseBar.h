@@ -9,6 +9,7 @@
 
 
 class OneChoiseBar{
+    static bool is_anyone_active;
 private:
     sf::Color back_color;
     sf::Color main_color;
@@ -16,7 +17,7 @@ private:
     int y;
     int radius;
     bool value;
-    sf::RenderWindow win;
+    //sf::RenderWindow win;
     sf::CircleShape ext_circle;
     sf::CircleShape int_circle;
 

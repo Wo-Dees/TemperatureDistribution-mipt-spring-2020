@@ -11,7 +11,6 @@
 #include <queue>
 #include <vector>
 #include "animation.h"
-#include "TextBar.h"
 
 
 class Menu : public Window{
@@ -21,6 +20,7 @@ private:
     std::queue<std::vector<double>> data;
     std::string filename;
     Animation anim;
+    int method;
 
 public:
     Menu(sf::RenderWindow& win, Animation& anim);
@@ -31,11 +31,13 @@ public:
     void start_step();
     void load_file_step();
     void init_conditions_step();
+    void parameters();
     void process_events() override;
     void button_animation();
     void draw_objects() override;
     std::queue<std::vector<double >> get_data();
     const std::string &getFilename() const;
+    int getMethod();
 };
 
 
