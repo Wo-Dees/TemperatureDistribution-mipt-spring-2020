@@ -41,7 +41,8 @@ void GUI::next_window(int choice, sf::RenderWindow& window, std::string filename
                 std::cout << i << " ";
             // вызов функции Лени которая вернет очередь и векторов
             std::queue<std::vector<double>> data;
-            solver_mesh(data, aluminum, 100, 100, 1, 500, 1, 0, 5000, init_conditions);
+            // рабочая изотерма
+            solver_mesh(data, aluminum, 100, 100, 1, 100, 1, 0, 0, init_conditions);
             anim.run(data);
         }
         case 2:
@@ -53,8 +54,9 @@ void GUI::next_window(int choice, sf::RenderWindow& window, std::string filename
         case 3:
         {
             std::vector<double> init_conditions = {0};
-            // вызов функции Лени которая вернет очередь и векторов
+            // вызов функции Лёни которая вернет очередь и векторов
             std::queue<std::vector<double>> data;
+            // рабочая изотерма (тут адиабата бессмысленна)
             solver_mesh(data, aluminum, 100, 100, 1, 500, 1, 0, 100, init_conditions);
             anim.run(data);
         }
@@ -63,7 +65,10 @@ void GUI::next_window(int choice, sf::RenderWindow& window, std::string filename
             std::vector<double> init_conditions = {1};
             // вызов функции Лени которая вернет очередь и векторов
             std::queue<std::vector<double>> data;
-            solver_mesh(data, aluminum, 100, 100, 1, 500, 1, 0, 5000, init_conditions);
+            // рабочая изотерма
+            //solver_mesh(data, aluminum, 100, 100, 1, 500, 1, 0, 1000, init_conditions);
+            // рабочая адиабата
+            solver_mesh(data, aluminum, 100, 100, 1, 0, 0, 1, 1000, init_conditions);
             anim.run(data);
         }
 
