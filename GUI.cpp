@@ -36,7 +36,7 @@ void GUI::next_window(int choice, sf::RenderWindow& window, std::string filename
     {
         case 1:
         {
-            std::vector<double> init_conditions = {1};
+            std::vector<double> init_conditions = anim.init_conditions();
             for (auto& i : init_conditions)
                 std::cout << i << " ";
             // вызов функции Лени которая вернет очередь и векторов

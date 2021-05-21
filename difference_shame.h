@@ -167,7 +167,7 @@ void next_step(vector<double>& answer,  const vector<double>& before, const mate
 // Side - сторона квадратной платинки (метры)
 // Observation_time - время енаблюдения (секунды)
 
-void solver_mesh(queue<vector<double>>& answer, const material& Material, const double& side_x, const double& side_y, const double& observation_time, const double& f, const double& p, const double& q, const double& t, const vector<double>& temperatute) {
+void solver_mesh(queue<vector<double>>& answer, const material& Material, const double& side_x, const double& side_y, const double& observation_time, const double& f, const double& p, const double& q, const double& t, vector<double>& temperatute) {
     for (unsigned int step_time = 0; step_time < COUNT_STEP_TIME; ++step_time) {
         if (step_time == 0) {
             if (temperatute.size() == 1) {
@@ -186,7 +186,7 @@ void solver_mesh(queue<vector<double>>& answer, const material& Material, const 
                 }
             }
             else {
-//                answer.push(std::move(temperatute));
+                answer.push(std::move(temperatute));
             }
         }
         else {
