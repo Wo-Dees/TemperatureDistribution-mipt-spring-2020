@@ -1,4 +1,4 @@
-# Temperature_distribution
+# TemperatureDistribution
 
 Численное моделирование нестационарной температурной картины в 3D.
 
